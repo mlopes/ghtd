@@ -1,0 +1,8 @@
+- action: df5fcade2adb49ceb3902f123dabc764
+  description: some description
+  project: inbox
+  contexts: [ online, computer ]
+- action: c933c8c0e55041f4966d5f326e853d28
+  description: some other description
+  project: outbox
+  contexts: [ offline, mac, other ]
