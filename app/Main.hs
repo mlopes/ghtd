@@ -9,6 +9,7 @@ data Command =
   | Remove
   | Projects
   | Contexts
+  | Help
   deriving Show
 
 parserInfo' :: O.ParserInfo (Maybe Command)
@@ -20,6 +21,7 @@ parserInfo' = info' parser' "This is the main prog desc"
         , ("rm", "Remove an action", pure Remove)
         , ("projects", "Show projects", pure Projects)
         , ("contexts", "Show contexts", pure Contexts)
+        , ("help", "Help I'm being repressed!", pure Help)
         ]
 
     info' :: O.Parser a -> String -> O.ParserInfo a
@@ -35,7 +37,7 @@ main = do
   command <- O.execParser parserInfo'
   case command of
     Nothing -> showActionsFromYaml yamlFilePath
-    Just(x) -> print x
+    Just x  -> print x
   return ()
 
 yamlFilePath :: String

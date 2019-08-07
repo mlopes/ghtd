@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Lib
     (
        showActionsFromYaml
@@ -13,9 +11,9 @@ import Formatter
 showActionsFromYaml :: String -> IO ()
 showActionsFromYaml f = do
               x <- yamlFromFile f
-              (case x of
+              case x of
                   Left y -> putStr $ Y.prettyPrintParseException y -- "Error parsing the file"
-                  Right y -> I.putStrLn $ stringifyActions y)
+                  Right y -> I.putStrLn $ stringifyActions y
 
 yamlFromFile :: String -> IO (Either Y.ParseException [Actions])
 yamlFromFile file =
