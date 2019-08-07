@@ -24,6 +24,7 @@ dependencies:
 - optparse-applicative
 - yaml
 - text
+- string-interpolate
 
 library:
   source-dirs: src

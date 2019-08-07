@@ -1,10 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Model
-  ( Actions(Actions)
-  , description
-  , project
-  , contexts
+  ( Actions(..)
   ) where
 
 import Control.Applicative
@@ -15,8 +12,8 @@ import Prelude
 
 data Actions =
   Actions
-       -- action :: Text
-    { description :: Text
+    { action :: Text
+    , description :: Text
     , project :: Text
     , contexts :: [Text]
     }
@@ -24,9 +21,6 @@ data Actions =
 
 instance FromJSON Actions where
   parseJSON (Y.Object v) =
-    Actions <$>
-        -- v .: "action" <*>
-    v .: "description" <*>
-    v .: "project" <*>
+    Actions <$> v .: "action" <*> v .: "description" <*> v .: "project" <*>
     v .: "contexts"
   parseJSON _ = fail "Expected Object for Action value"
