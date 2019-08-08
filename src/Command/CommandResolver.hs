@@ -1,10 +1,13 @@
 module Command.CommandResolver
-  ( parserInfo
+  ( resolveCommand
   ) where
 
 import Command.Command
 import qualified Data.Foldable as F
 import qualified Options.Applicative as O
+
+resolveCommand :: IO (Maybe Command)
+resolveCommand = O.execParser parserInfo
 
 parserInfo :: O.ParserInfo (Maybe Command)
 parserInfo = info' parser' "This is the main prog desc"
