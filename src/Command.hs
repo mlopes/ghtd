@@ -1,10 +1,24 @@
-module Command.CommandResolver
-  ( resolveCommand
+module Command
+  ( Command(..)
+  , dispatchCommand
+  , resolveCommand
   ) where
 
-import Command.Command
 import qualified Data.Foldable as F
+import Lib
 import qualified Options.Applicative as O
+
+data Command
+  = Add
+  | Remove
+  | Projects
+  | Contexts
+  | Help
+  deriving (Show)
+
+dispatchCommand :: Maybe Command -> String -> IO ()
+dispatchCommand Nothing yamlFilePath = showActionsFromYaml yamlFilePath
+dispatchCommand (Just x) _ = print x
 
 resolveCommand :: IO (Maybe Command)
 resolveCommand = O.execParser parserInfo

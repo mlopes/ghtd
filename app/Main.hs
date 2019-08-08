@@ -1,7 +1,6 @@
 module Main where
 
-import Command.CommandDispatcher
-import Command.CommandResolver
+import Command
 
 main :: IO ()
 main = do
