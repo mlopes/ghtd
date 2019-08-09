@@ -12,11 +12,11 @@ import           Model
 import           Lib
 
 dispatchCommand :: Maybe Command -> String -> IO ()
-dispatchCommand Nothing yamlFilePath = showActionsFromYaml yamlFilePath
-dispatchCommand (Just (Add description project contexts)) yamlFilePath = do
+dispatchCommand Nothing filePath = showActions filePath
+dispatchCommand (Just (Add description project contexts)) filePath = do
   action <- textNoDashesUUID4
   addAction
-    yamlFilePath
+    filePath
     Actions { action      = action
             , description = description
             , project     = project

@@ -1,5 +1,5 @@
 module Lib
-  ( showActionsFromYaml
+  ( showActions
   , addAction
   ) where
 
@@ -10,8 +10,8 @@ import Model
 
 type YamlFilePath = String
 
-showActionsFromYaml :: YamlFilePath -> IO ()
-showActionsFromYaml f = do
+showActions:: YamlFilePath -> IO ()
+showActions f = do
   x <- yamlFromFile f
   case x of
     Left y -> putStr $ Y.prettyPrintParseException y -- "Error parsing the file"
