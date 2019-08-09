@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Command
   ( Command(..)
   , dispatchCommand
@@ -5,11 +7,12 @@ module Command
   ) where
 
 import qualified Data.Foldable as F
+import Data.Text
 import Lib
 import qualified Options.Applicative as O
 
 data Command
-  = Add String String String
+  = Add Text Text Text
   | Remove
   | Projects
   | Contexts
@@ -44,7 +47,7 @@ info' p desc = O.info (O.helper <*> p) (O.fullDesc <> O.progDesc desc)
 
 command (cmdName, desc, parser) = O.command cmdName (info' parser desc)
 
-actionParam :: O.Parser String
+actionParam :: O.Parser Text
 actionParam = O.argument O.str (O.metavar "ACTION")
 
 -- Saving this here as a reference on how to parse a bunch of optional positional arguments
