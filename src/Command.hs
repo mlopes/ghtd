@@ -1,19 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Command
-  ( Command(..)
-  , dispatchCommand
-  , resolveCommand
+  ( resolveCommand
+  , Command(..)
   )
 where
 
 import qualified Data.Foldable                 as F
-import Data.Text.Lazy (Text)
-import Data.UUID
-import Data.UUID.V4
-import           Lib
-import Model
-import qualified Data.Text.Lazy as L
+import           Data.Text.Lazy                 ( Text )
+import qualified Data.Text.Lazy                as L
 import qualified Options.Applicative           as O
 
 data Command
@@ -23,14 +18,6 @@ data Command
   | Contexts
   | Help
   deriving (Show)
-
-dispatchCommand :: Maybe Command -> String -> IO ()
-dispatchCommand Nothing yamlFilePath = showActionsFromYaml yamlFilePath
-dispatchCommand (Just(Add description project contexts)) yamlFilePath = do
-  uuid <- textUUID4
-  let action = L.filter ('-' /=) uuid
-  addAction yamlFilePath Actions { action=action, description=description, project=project, contexts=contexts }
-dispatchCommand (Just x) _            = print x
 
 resolveCommand :: IO (Maybe Command)
 resolveCommand = O.execParser parserInfo
@@ -88,5 +75,3 @@ contextAsStringParser = O.strOption
 splitStringToTextOn :: Text -> String -> [Text]
 splitStringToTextOn s = L.splitOn s . L.pack
 
-textUUID4 :: IO Text
-textUUID4 = fmap (L.fromStrict . toText) nextRandom

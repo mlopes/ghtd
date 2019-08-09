@@ -1,6 +1,7 @@
 module Main where
 
 import Command
+import CommandDispatcher
 
 main :: IO ()
 main = do
