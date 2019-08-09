@@ -9,7 +9,7 @@ import Lib
 import qualified Options.Applicative as O
 
 data Command
-  = Add String String
+  = Add String String String
   | Remove
   | Projects
   | Contexts
@@ -30,7 +30,9 @@ parser' :: O.Parser (Maybe Command)
 parser' =
   O.optional $
   (O.subparser . F.foldMap command)
-    [ ("add", "Add new action", Add <$> actionParam <*> projectOption)
+    [ ( "add"
+      , "Add new action"
+      , Add <$> actionParam <*> projectOption <*> contextOptions)
     , ("rm", "Remove an action", pure Remove)
     , ("projects", "Show projects", pure Projects)
     , ("contexts", "Show contexts", pure Contexts)
@@ -57,4 +59,15 @@ projectOption =
        , O.long "project"
        , O.short 'p'
        , O.metavar "PROJECT"
+       ])
+
+contextOptions =
+  O.strOption
+    (mconcat
+       [ O.help "Contexts for the action."
+       , O.value ""
+       , O.showDefault
+       , O.long "contexts"
+       , O.short 'c'
+       , O.metavar "CONTEXTS"
        ])
