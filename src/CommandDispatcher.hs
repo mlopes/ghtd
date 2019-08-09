@@ -7,7 +7,7 @@ import           Command
 import           Data.Text.Lazy                 ( Text )
 import qualified Data.Text.Lazy                as L
 import           Data.UUID
-import           Data.UUID.V4
+import qualified Data.UUID.V4 as UUID4
 import           Model
 import           Lib
 
@@ -25,6 +25,11 @@ dispatchCommand (Just (Add description project contexts)) yamlFilePath = do
 dispatchCommand (Just x) _ = print x
 
 textNoDashesUUID4 :: IO Text
-textNoDashesUUID4 = fmap (L.filter ('_' /=)) uuid
-  where uuid = fmap (L.fromStrict . toText) nextRandom
+textNoDashesUUID4 = stripDashes . uuidToLazyText <$> UUID4.nextRandom
+
+uuidToLazyText :: UUID -> Text
+uuidToLazyText = L.fromStrict . toText
+
+stripDashes :: Text -> Text
+stripDashes = L.filter ('-' /=)
 
