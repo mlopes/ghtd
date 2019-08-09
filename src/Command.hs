@@ -12,7 +12,7 @@ import Lib
 import qualified Options.Applicative as O
 
 data Command
-  = Add Text Text Text
+  = Add Text Text [Text]
   | Remove
   | Projects
   | Contexts
@@ -64,13 +64,18 @@ projectOption =
        , O.metavar "PROJECT"
        ])
 
-contextOptions =
-  O.strOption
-    (mconcat
-       [ O.help "Contexts for the action."
-       , O.value ""
-       , O.showDefault
-       , O.long "contexts"
-       , O.short 'c'
-       , O.metavar "CONTEXTS"
-       ])
+contextOptions = fmap (splitStringToTextOn ",") contextAsStringParser
+
+contextAsStringParser =
+  (O.strOption
+     (mconcat
+        [ O.help "Contexts for the action."
+        , O.value ""
+        , O.showDefault
+        , O.long "contexts"
+        , O.short 'c'
+        , O.metavar "CONTEXTS"
+        ]))
+
+splitStringToTextOn :: Text -> String -> [Text]
+splitStringToTextOn s = splitOn s . pack
