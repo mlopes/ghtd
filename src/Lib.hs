@@ -1,5 +1,6 @@
 module Lib
   ( showActionsFromYaml
+  , addAction
   ) where
 
 import qualified Data.Text.Lazy.IO as I (putStrLn)
@@ -7,12 +8,24 @@ import qualified Data.Yaml as Y
 import Formatter
 import Model
 
-showActionsFromYaml :: String -> IO ()
+type YamlFilePath = String
+
+showActionsFromYaml :: YamlFilePath -> IO ()
 showActionsFromYaml f = do
   x <- yamlFromFile f
   case x of
     Left y -> putStr $ Y.prettyPrintParseException y -- "Error parsing the file"
     Right y -> I.putStrLn $ stringifyActions y
+
+addAction :: YamlFilePath -> Actions -> IO ()
+addAction f a = do
+  y <- yamlFromFile f
+  case y of
+    Left e -> putStr $ Y.prettyPrintParseException e -- "Error parsing the file"
+    Right as -> writeActionsToFile f (a : as)
+
+writeActionsToFile :: YamlFilePath -> [Actions] -> IO ()
+writeActionsToFile = Y.encodeFile
 
 yamlFromFile :: String -> IO (Either Y.ParseException [Actions])
 yamlFromFile file =
