@@ -3,34 +3,36 @@
 
 module Formatter
   ( stringifyActions
-  ) where
+  , actionToText
+  )
+where
 
-import Data.String.Interpolate (i)
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as T
-import Model
+import           Data.String.Interpolate        ( i )
+import           Data.Text.Lazy                 ( Text )
+import qualified Data.Text.Lazy                as T
+import           Model
 
 stringifyActions :: [Actions] -> Text
 stringifyActions = textListToLines . actionListToTextList . indexList
 
-indexList :: [a] -> [(Int, a)]
-indexList l = zip [1 .. (length l)] l
+indexList :: [a] -> [(Text, a)]
+indexList l = zip (fmap (T.pack . show) [1 .. (length l)]) l
 
 textListToLines :: [Text] -> Text
 textListToLines = T.intercalate "\n\n"
 
-actionListToTextList =
-  map
-    (\x ->
-       let index = T.pack . show $ fst x
-           currentAction = snd x
-        in T.intercalate
-             "\n"
-             [ [i|#{index}. #{description currentAction}|]
-             , [i|Project: #{project currentAction}|]
-             , [i|Contexts: #{actionContextsToText currentAction}|]
-             , [i|(#{action currentAction})|]
-             ])
+actionListToTextList = fmap
+  (\x -> [i|#{fst x}. #{actionToText $ snd x}|])
+
+actionToText :: Actions -> Text
+actionToText a =
+  T.intercalate
+    "\n"
+    [ [i|#{description a}|]
+    , [i|Project: #{project a}|]
+    , [i|Contexts: #{actionContextsToText a}|]
+    , [i|(#{action a})|]
+    ]
 
 actionContextsToText :: Actions -> Text
 actionContextsToText actions = T.intercalate ", " $ contexts actions

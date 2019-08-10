@@ -5,6 +5,7 @@ module Lib
 
 import qualified Data.Text.Lazy.IO as I (putStrLn)
 import qualified Data.Yaml as Y
+import Data.Functor
 import Formatter
 import Model
 
@@ -22,7 +23,7 @@ addAction f a = do
   y <- yamlFromFile f
   case y of
     Left e -> putStr $ Y.prettyPrintParseException e -- "Error parsing the file"
-    Right as -> writeActionsToFile f (a : as)
+    Right as -> writeActionsToFile f (a : as) >> I.putStrLn (actionToText a)
 
 writeActionsToFile :: YamlFilePath -> [Actions] -> IO ()
 writeActionsToFile = Y.encodeFile
