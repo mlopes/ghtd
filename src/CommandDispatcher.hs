@@ -7,7 +7,7 @@ import           Command
 import           Data.Text.Lazy                 ( Text )
 import qualified Data.Text.Lazy                as L
 import           Data.UUID
-import qualified Data.UUID.V4 as UUID4
+import qualified Data.UUID.V4                  as UUID4
 import           Model
 import           Lib
 

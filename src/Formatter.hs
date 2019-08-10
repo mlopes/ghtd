@@ -16,23 +16,22 @@ stringifyActions :: [Actions] -> Text
 stringifyActions = textListToLines . actionListToTextList . indexList
 
 indexList :: [a] -> [(Text, a)]
-indexList l = zip (fmap (T.pack . show) [1 .. (length l)]) l
+indexList = zip (fmap (T.pack . show) [1 ..])
 
 textListToLines :: [Text] -> Text
 textListToLines = T.intercalate "\n\n"
 
-actionListToTextList = fmap
-  (\x -> [i|#{fst x}. #{actionToText $ snd x}|])
+actionListToTextList :: [(Text, Actions)] -> [Text]
+actionListToTextList = fmap (\x -> [i|#{fst x}. #{actionToText $ snd x}|])
 
 actionToText :: Actions -> Text
-actionToText a =
-  T.intercalate
-    "\n"
-    [ [i|#{description a}|]
-    , [i|Project: #{project a}|]
-    , [i|Contexts: #{actionContextsToText a}|]
-    , [i|(#{action a})|]
-    ]
+actionToText a = T.intercalate
+  "\n"
+  [ [i|#{description a}|]
+  , [i|Project: #{project a}|]
+  , [i|Contexts: #{actionContextsToText a}|]
+  , [i|(#{action a})|]
+  ]
 
 actionContextsToText :: Actions -> Text
 actionContextsToText actions = T.intercalate ", " $ contexts actions
