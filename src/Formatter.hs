@@ -10,9 +10,9 @@ where
 import           Data.String.Interpolate        ( i )
 import           Data.Text.Lazy                 ( Text )
 import qualified Data.Text.Lazy                as T
-import           Model
+import Action
 
-stringifyActions :: [Actions] -> Text
+stringifyActions :: [Action] -> Text
 stringifyActions = textListToLines . actionListToTextList . indexList
 
 indexList :: [a] -> [(Text, a)]
@@ -21,17 +21,18 @@ indexList = zip (fmap (T.pack . show) [1 ..])
 textListToLines :: [Text] -> Text
 textListToLines = T.intercalate "\n\n"
 
-actionListToTextList :: [(Text, Actions)] -> [Text]
+actionListToTextList :: [(Text, Action)] -> [Text]
 actionListToTextList = fmap (\x -> [i|#{fst x}. #{actionToText $ snd x}|])
 
-actionToText :: Actions -> Text
-actionToText a = T.intercalate
+actionToText :: Action -> Text
+actionToText (Action action description project contexts state) = T.intercalate
   "\n"
-  [ [i|#{description a}|]
-  , [i|Project: #{project a}|]
-  , [i|Contexts: #{actionContextsToText a}|]
-  , [i|(#{action a})|]
+  [ [i|#{description}|]
+  , [i|Project: #{project}|]
+  , [i|Contexts: #{actionContextsToText contexts}|]
+  , [i|(#{action})|]
   ]
 
-actionContextsToText :: Actions -> Text
-actionContextsToText actions = T.intercalate ", " $ contexts actions
+actionContextsToText :: [Text] -> Text
+actionContextsToText = T.intercalate ", "
+

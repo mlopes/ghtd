@@ -3,25 +3,25 @@ module CommandDispatcher
   )
 where
 
-import           CliCommand
 import           Data.Text.Lazy                 ( Text )
 import qualified Data.Text.Lazy                as L
+import qualified Data.Text.Lazy.IO             as I
 import           Data.UUID
 import qualified Data.UUID.V4                  as UUID4
-import           Model
-import           Lib
+
+import           Action
+import           CliCommand
+import           Infra.YamlFileIO
+import           Formatter
 
 dispatchCommand :: Maybe CliCommand -> String -> IO ()
-dispatchCommand Nothing filePath = showActions filePath
+dispatchCommand Nothing filePath = do
+  actions <- readActions filePath
+  I.putStrLn (stringifyActions actions)
 dispatchCommand (Just (Add description project contexts)) filePath = do
   action <- textNoDashesUUID4
-  addAction
-    filePath
-    Actions { action      = action
-            , description = description
-            , project     = project
-            , contexts    = contexts
-            }
+  addAction filePath (Action action description project contexts ToDo)
+
 dispatchCommand (Just x) _ = print x
 
 textNoDashesUUID4 :: IO Text

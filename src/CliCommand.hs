@@ -12,7 +12,7 @@ import qualified Data.Text.Lazy                as L
 import qualified Options.Applicative           as O
 
 data CliCommand
-  = Add Text Text [Text]
+  = Add Description Project Contexts
   | Remove
   | Projects
   | Contexts
@@ -21,6 +21,10 @@ data CliCommand
 
 resolveCliCommand :: IO (Maybe CliCommand)
 resolveCliCommand = O.execParser parserInfo
+
+type Description = Text
+type Project = Text
+type Contexts = [Text]
 
 parserInfo :: O.ParserInfo (Maybe CliCommand)
 parserInfo = info' parser' "This is the main prog desc"
@@ -59,8 +63,10 @@ projectOption = O.strOption
     ]
   )
 
+contextOptions :: O.Parser Contexts
 contextOptions = fmap (splitStringToTextOn ",") contextAsStringParser
 
+contextAsStringParser :: O.Parser String
 contextAsStringParser = O.strOption
   (mconcat
     [ O.help "Contexts for the action."
