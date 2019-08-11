@@ -13,7 +13,7 @@ type Contexts = [Text]
 
 data ActionState = ToDo
                  | Done
-                 | Canceled
+                 | Cancelled
 
 data Action =
   Action ActionId Description Project Contexts ActionState

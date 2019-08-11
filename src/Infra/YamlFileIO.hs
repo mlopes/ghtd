@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 
 module Infra.YamlFileIO
   ( readActions
@@ -7,6 +8,7 @@ module Infra.YamlFileIO
 where
 
 import qualified Data.Yaml                     as Y
+import           Data.String.Interpolate        ( i )
 import           Data.Text.Lazy                 ( Text )
 import           Action
 import           Data.Yaml                      ( FromJSON(..)
@@ -19,49 +21,23 @@ data FileFailure e = ReadFailure e | WriteFailure e
 
 type YamlFilePath = String
 
-data ActionYaml =
-  ActionYaml
-    { action :: Text
-    , description :: Text
-    , project :: Text
-    , contexts :: [Text]
-    }
-  deriving (Show)
+addAction :: YamlFilePath -> Action -> IO ()
+addAction f a = do
+  existingActions <- readActions f
+  let newActionList = a : existingActions
+  Y.encodeFile f newActionList
 
 readActions :: YamlFilePath -> IO [Action]
 readActions file = do
-  yaml <- yamlFromFile file
-  return $ fromYamlToDomain <$> yaml
-
-addAction :: YamlFilePath -> Action -> IO ()
-addAction f a = do
-  existingActions <- yamlFromFile f
-  let newActionList = fromDomainToYaml a : existingActions
-  Y.encodeFile f newActionList
-
-yamlFromFile :: YamlFilePath -> IO [ActionYaml]
-yamlFromFile file = do
   fileReadResult <-
-    Y.decodeFileEither file :: IO (Either Y.ParseException [ActionYaml])
+    Y.decodeFileEither file :: IO (Either Y.ParseException [Action])
   case fileReadResult of
     Left  e  -> error $ Y.prettyPrintParseException e
     Right as -> return as
 
-fromDomainToYaml :: Action -> ActionYaml
-fromDomainToYaml (Action actionId description project contexts status) =
-  ActionYaml { action      = actionId
-             , description = description
-             , project     = project
-             , contexts    = contexts
-             }
-
-fromYamlToDomain :: ActionYaml -> Action
-fromYamlToDomain y =
-  Action (action y) (description y) (project y) (contexts y) ToDo -- ToDo hardcoded while we don't deal with statuses
-
-instance FromJSON ActionYaml where
+instance FromJSON Action where
   parseJSON (Y.Object v) =
-    ActionYaml
+    Action
       <$> v
       .:  "action"
       <*> v
@@ -70,12 +46,28 @@ instance FromJSON ActionYaml where
       .:  "project"
       <*> v
       .:  "contexts"
+      <*> v
+      .: "state"
   parseJSON _ = fail "Expected Object for Action value"
 
-instance ToJSON ActionYaml where
-  toJSON a = Y.object
-    [ "action" .= action a
-    , "description" .= description a
-    , "project" .= project a
-    , "contexts" .= contexts a
+instance FromJSON ActionState where
+    parseJSON (Y.String s)
+      | s == "To Do" = return ToDo
+      | s == "Done" = return Done
+      | s == "Cancelled" = return Cancelled
+      | otherwise = fail [i|Expected one of 'To Do', 'Done', or 'Cancelled'. Found '#{s}'.|]
+
+instance ToJSON Action where
+  toJSON (Action actionId description project contexts state) = Y.object
+    [ "action" .= actionId
+    , "description" .= description
+    , "project" .= project
+    , "contexts" .= contexts
+    , "state" .= state
     ]
+
+instance ToJSON ActionState where
+  toJSON ToDo = Y.String "To Do"
+  toJSON Done = Y.String "Done"
+  toJSON Cancelled = Y.String "Cancelled"
+
