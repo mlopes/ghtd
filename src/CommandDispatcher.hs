@@ -17,10 +17,12 @@ import           Formatter
 dispatchCommand :: Maybe CliCommand -> String -> IO ()
 dispatchCommand Nothing filePath = do
   actions <- readActions filePath
-  I.putStrLn (stringifyActions actions)
+  I.putStrLn (format actions)
 dispatchCommand (Just (Add description project contexts)) filePath = do
-  action <- textNoDashesUUID4
-  addAction filePath (Action action description project contexts ToDo)
+  actionId <- textNoDashesUUID4
+  let action = Action actionId description project contexts ToDo
+  _ <- addAction filePath action
+  I.putStrLn $ format action
 
 dispatchCommand (Just x) _ = print x
 
