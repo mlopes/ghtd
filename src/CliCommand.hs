@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Command
-  ( resolveCommand
-  , Command(..)
+module CliCommand
+  ( resolveCliCommand
+  , CliCommand(..)
   )
 where
 
@@ -11,7 +11,7 @@ import           Data.Text.Lazy                 ( Text )
 import qualified Data.Text.Lazy                as L
 import qualified Options.Applicative           as O
 
-data Command
+data CliCommand
   = Add Text Text [Text]
   | Remove
   | Projects
@@ -19,13 +19,13 @@ data Command
   | Help
   deriving (Show)
 
-resolveCommand :: IO (Maybe Command)
-resolveCommand = O.execParser parserInfo
+resolveCliCommand :: IO (Maybe CliCommand)
+resolveCliCommand = O.execParser parserInfo
 
-parserInfo :: O.ParserInfo (Maybe Command)
+parserInfo :: O.ParserInfo (Maybe CliCommand)
 parserInfo = info' parser' "This is the main prog desc"
 
-parser' :: O.Parser (Maybe Command)
+parser' :: O.Parser (Maybe CliCommand)
 parser' = O.optional $ (O.subparser . F.foldMap command)
   [ ( "add"
     , "Add new action"

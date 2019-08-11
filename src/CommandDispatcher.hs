@@ -3,7 +3,7 @@ module CommandDispatcher
   )
 where
 
-import           Command
+import           CliCommand
 import           Data.Text.Lazy                 ( Text )
 import qualified Data.Text.Lazy                as L
 import           Data.UUID
@@ -11,7 +11,7 @@ import qualified Data.UUID.V4                  as UUID4
 import           Model
 import           Lib
 
-dispatchCommand :: Maybe Command -> String -> IO ()
+dispatchCommand :: Maybe CliCommand -> String -> IO ()
 dispatchCommand Nothing filePath = showActions filePath
 dispatchCommand (Just (Add description project contexts)) filePath = do
   action <- textNoDashesUUID4

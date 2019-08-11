@@ -1,11 +1,11 @@
 module Main where
 
-import Command
-import CommandDispatcher
+import           CliCommand
+import           CommandDispatcher
 
 main :: IO ()
 main = do
-  command <- resolveCommand
+  command <- resolveCliCommand
   dispatchCommand command yamlFilePath
 
 yamlFilePath :: String
