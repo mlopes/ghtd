@@ -9,15 +9,12 @@ where
 
 import qualified Data.Yaml                     as Y
 import           Data.String.Interpolate        ( i )
-import           Data.Text.Lazy                 ( Text )
 import           Action
 import           Data.Yaml                      ( FromJSON(..)
                                                 , (.:)
                                                 , ToJSON(..)
                                                 , (.=)
                                                 )
-
-data FileFailure e = ReadFailure e | WriteFailure e
 
 type YamlFilePath = String
 
@@ -48,7 +45,7 @@ instance FromJSON Action where
       .:  "contexts"
       <*> v
       .: "state"
-  parseJSON _ = fail "Expected Object for Action value"
+  parseJSON _ = fail "Expected YAML Object for an Action value, got something else instead."
 
 instance FromJSON ActionState where
     parseJSON (Y.String s)
@@ -56,6 +53,7 @@ instance FromJSON ActionState where
       | s == "Done" = return Done
       | s == "Cancelled" = return Cancelled
       | otherwise = fail [i|Expected one of 'To Do', 'Done', or 'Cancelled'. Found '#{s}'.|]
+    parseJSON _ = fail "Expected 'state' to be a string, but got something else."
 
 instance ToJSON Action where
   toJSON (Action actionId description project contexts state) = Y.object

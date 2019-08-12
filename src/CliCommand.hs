@@ -44,6 +44,7 @@ parser' = O.optional $ (O.subparser . F.foldMap command)
 info' :: O.Parser a -> String -> O.ParserInfo a
 info' p desc = O.info (O.helper <*> p) (O.fullDesc <> O.progDesc desc)
 
+command :: (String, String, O.Parser a) -> O.Mod O.CommandFields a
 command (cmdName, desc, parser) = O.command cmdName (info' parser desc)
 
 actionParam :: O.Parser Text
@@ -52,6 +53,7 @@ actionParam = O.argument O.str (O.metavar "ACTION")
 -- Saving this here as a reference on how to parse a bunch of optional positional arguments
 -- addParams :: O.Parser (Maybe [String])
 -- addParams = O.optional $ O.some (O.argument O.str (O.metavar "FILTER..."))
+projectOption :: O.Parser Project
 projectOption = O.strOption
   (mconcat
     [ O.help "Project name."

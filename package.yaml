@@ -29,6 +29,10 @@ dependencies:
 
 library:
   source-dirs: src
+  ghc-options:
+  - -Wall
+  - -fwarn-unused-binds
+  - -fwarn-unused-imports
 
 executables:
   ghtd-exe:
@@ -38,6 +42,9 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -Wall
+    - -fwarn-unused-binds
+    - -fwarn-unused-imports
     dependencies:
     - ghtd
 
