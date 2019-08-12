@@ -25,7 +25,9 @@ dispatchCommand (Just (Add description project contexts)) filePath = do
   putStrLn $ format action
 
 dispatchCommand (Just (Complete actionId)) filePath =
-  completeAction actionId filePath
+  changeActionState Done actionId filePath
+dispatchCommand (Just (Cancel actionId)) filePath =
+  changeActionState Cancelled actionId filePath
 dispatchCommand (Just x) _ = print x
 
 textNoDashesUUID4 :: IO Text
@@ -34,10 +36,10 @@ textNoDashesUUID4 = stripDashes . toText <$> UUID4.nextRandom
 stripDashes :: Text -> Text
 stripDashes = filter ('-' /=)
 
-completeAction :: Text -> Text -> IO ()
-completeAction aId filePath = do
+changeActionState :: ActionState -> Text -> Text -> IO ()
+changeActionState newState aId filePath = do
   actions <- readActions filePath
-  let newActions = fmap (\x -> modifyState aId x Done) actions
+  let newActions = fmap (\x -> modifyState aId x newState) actions
   _ <- writeActions filePath newActions
   putStrLn $ format newActions
 

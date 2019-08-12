@@ -15,6 +15,7 @@ import qualified Options.Applicative           as O
 data CliCommand
   = Add Description Project Contexts
   | Complete ActionId
+  | Cancel ActionId
   | Remove
   | Projects
   | Contexts
@@ -39,6 +40,7 @@ parser' = O.optional $ (O.subparser . F.foldMap command)
     , Add <$> actionParam <*> projectOption <*> contextOptions
     )
   , ("complete", "Complete an action."      , Complete <$> actionIdParam)
+  , ("cancel"  , "Cancel an action."        , Cancel <$> actionIdParam)
   , ("rm"      , "Remove an action"         , pure Remove)
   , ("projects", "Show projects"            , pure Projects)
   , ("contexts", "Show contexts"            , pure Contexts)
