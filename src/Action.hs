@@ -1,3 +1,5 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Action
   ( Action(..)
   , ActionState(..)
@@ -17,3 +19,4 @@ data ActionState = ToDo
 
 data Action =
   Action ActionId Description Project Contexts ActionState
+

@@ -20,12 +20,8 @@ extra-source-files:
 description:         Please see the README on GitHub at <https://github.com/githubuser/ghtd#readme>
 
 dependencies:
-- base >= 4.7 && < 5
-- optparse-applicative
-- yaml
-- text
-- string-interpolate
-- uuid
+- base>= 4.12 && < 5
+- classy-prelude
 
 library:
   source-dirs: src
@@ -33,6 +29,12 @@ library:
   - -Wall
   - -fwarn-unused-binds
   - -fwarn-unused-imports
+  dependencies:
+  - optparse-applicative
+  - yaml
+  - text
+  - string-interpolate
+  - uuid
 
 executables:
   ghtd-exe:
@@ -47,6 +49,7 @@ executables:
     - -fwarn-unused-imports
     dependencies:
     - ghtd
+    - text
 
 tests:
   ghtd-test:

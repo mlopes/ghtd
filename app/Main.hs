@@ -1,4 +1,10 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main where
+
+import           Data.Text.Lazy                 ( Text )
+import           System.IO
 
 import           CliCommand
 import           CommandDispatcher
@@ -8,5 +14,5 @@ main = do
   command <- resolveCliCommand
   dispatchCommand command yamlFilePath
 
-yamlFilePath :: String
+yamlFilePath :: Text
 yamlFilePath = "./data/sample.yaml"

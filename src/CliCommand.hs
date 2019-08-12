@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module CliCommand
   ( resolveCliCommand
@@ -6,10 +7,19 @@ module CliCommand
   )
 where
 
+import           Control.Applicative
+import           Control.Monad
 import qualified Data.Foldable                 as F
-import           Data.Text.Lazy                 ( Text )
+import           Data.Function
+import           Data.Maybe
+import           Data.Monoid
+import           Data.Text.Lazy                 ( Text
+                                                , unpack
+                                                )
 import qualified Data.Text.Lazy                as L
 import qualified Options.Applicative           as O
+import           System.IO
+import           Text.Show
 
 data CliCommand
   = Add Description Project Contexts
@@ -41,11 +51,12 @@ parser' = O.optional $ (O.subparser . F.foldMap command)
   , ("help"    , "Help I'm being repressed!", pure Help)
   ]
 
-info' :: O.Parser a -> String -> O.ParserInfo a
-info' p desc = O.info (O.helper <*> p) (O.fullDesc <> O.progDesc desc)
+info' :: O.Parser a -> Text -> O.ParserInfo a
+info' p desc = O.info (O.helper <*> p) (O.fullDesc <> O.progDesc (unpack desc))
 
-command :: (String, String, O.Parser a) -> O.Mod O.CommandFields a
-command (cmdName, desc, parser) = O.command cmdName (info' parser desc)
+command :: (Text, Text, O.Parser a) -> O.Mod O.CommandFields a
+command (cmdName, desc, parser) =
+  O.command (unpack cmdName) (info' parser desc)
 
 actionParam :: O.Parser Text
 actionParam = O.argument O.str (O.metavar "ACTION")
@@ -66,9 +77,9 @@ projectOption = O.strOption
   )
 
 contextOptions :: O.Parser Contexts
-contextOptions = fmap (splitStringToTextOn ",") contextAsStringParser
+contextOptions = fmap (L.splitOn ",") contextAsStringParser
 
-contextAsStringParser :: O.Parser String
+contextAsStringParser :: O.Parser Text
 contextAsStringParser = O.strOption
   (mconcat
     [ O.help "Contexts for the action."
@@ -79,7 +90,4 @@ contextAsStringParser = O.strOption
     , O.metavar "CONTEXTS"
     ]
   )
-
-splitStringToTextOn :: Text -> String -> [Text]
-splitStringToTextOn s = L.splitOn s . L.pack
 

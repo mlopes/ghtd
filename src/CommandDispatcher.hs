@@ -1,20 +1,27 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module CommandDispatcher
   ( dispatchCommand
   )
 where
 
+import           Data.Eq
+import           Data.Function
+import           Data.Functor
+import           Data.Maybe
 import           Data.Text.Lazy                 ( Text )
 import qualified Data.Text.Lazy                as L
 import qualified Data.Text.Lazy.IO             as I
 import           Data.UUID
 import qualified Data.UUID.V4                  as UUID4
+import           System.IO
 
 import           Action
 import           CliCommand
 import           Infra.YamlFileIO
 import           Formatter
 
-dispatchCommand :: Maybe CliCommand -> String -> IO ()
+dispatchCommand :: Maybe CliCommand -> Text -> IO ()
 dispatchCommand Nothing filePath = do
   actions <- readActions filePath
   I.putStrLn (format actions)
