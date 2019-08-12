@@ -5,16 +5,9 @@ module CommandDispatcher
   )
 where
 
-import           Data.Eq
-import           Data.Function
-import           Data.Functor
-import           Data.Maybe
-import           Data.Text.Lazy                 ( Text )
-import qualified Data.Text.Lazy                as L
-import qualified Data.Text.Lazy.IO             as I
+import           ClassyPrelude
 import           Data.UUID
 import qualified Data.UUID.V4                  as UUID4
-import           System.IO
 
 import           Action
 import           CliCommand
@@ -24,21 +17,36 @@ import           Formatter
 dispatchCommand :: Maybe CliCommand -> Text -> IO ()
 dispatchCommand Nothing filePath = do
   actions <- readActions filePath
-  I.putStrLn (format actions)
+  putStrLn (format actions)
 dispatchCommand (Just (Add description project contexts)) filePath = do
   actionId <- textNoDashesUUID4
   let action = Action actionId description project contexts ToDo
   _ <- addAction filePath action
-  I.putStrLn $ format action
+  putStrLn $ format action
 
+dispatchCommand (Just (Complete actionId)) filePath =
+  completeAction actionId filePath
 dispatchCommand (Just x) _ = print x
 
 textNoDashesUUID4 :: IO Text
-textNoDashesUUID4 = stripDashes . uuidToLazyText <$> UUID4.nextRandom
-
-uuidToLazyText :: UUID -> Text
-uuidToLazyText = L.fromStrict . toText
+textNoDashesUUID4 = stripDashes . toText <$> UUID4.nextRandom
 
 stripDashes :: Text -> Text
-stripDashes = L.filter ('-' /=)
+stripDashes = filter ('-' /=)
+
+completeAction :: Text -> Text -> IO ()
+completeAction aId filePath = do
+  actions <- readActions filePath
+  let newActions = fmap (\x -> modifyState aId x Done) actions
+  _ <- writeActions filePath newActions
+  putStrLn $ format newActions
+
+modifyState :: Text -> Action -> ActionState -> Action
+modifyState aid (Action actionId description project contexts state) newState
+  | aid == actionId && state == ToDo = Action actionId
+                                              description
+                                              project
+                                              contexts
+                                              newState
+modifyState _ action _ = action
 

@@ -5,19 +5,12 @@
 
 module Infra.YamlFileIO
   ( readActions
+  , writeActions
   , addAction
   )
 where
 
-import           Control.Applicative
-import           Control.Monad
-import           Data.Bool
-import           Data.Either
-import           Data.Eq
-import           Data.Function
-import           Data.Text.Lazy                 ( Text
-                                                , unpack
-                                                )
+import           ClassyPrelude
 import qualified Data.Yaml                     as Y
 import           Data.String.Interpolate        ( i )
 import           Action
@@ -26,7 +19,6 @@ import           Data.Yaml                      ( FromJSON(..)
                                                 , ToJSON(..)
                                                 , (.=)
                                                 )
-import           System.IO
 
 type YamlFilePath = Text
 
@@ -45,6 +37,9 @@ readActions f = do
   case fileReadResult of
     Left  e  -> fail $ Y.prettyPrintParseException e
     Right as -> return as
+
+writeActions :: YamlFilePath -> [Action] -> IO ()
+writeActions filePath = Y.encodeFile (unpack filePath)
 
 instance FromJSON Action where
   parseJSON (Y.Object v) =

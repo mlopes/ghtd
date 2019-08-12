@@ -3,8 +3,8 @@
 
 module Main where
 
-import           Data.Text.Lazy                 ( Text )
-import           System.IO
+
+import           ClassyPrelude
 
 import           CliCommand
 import           CommandDispatcher

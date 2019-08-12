@@ -7,22 +7,14 @@ module CliCommand
   )
 where
 
-import           Control.Applicative
-import           Control.Monad
+import           ClassyPrelude
+import           Data.Text                      ( splitOn )
 import qualified Data.Foldable                 as F
-import           Data.Function
-import           Data.Maybe
-import           Data.Monoid
-import           Data.Text.Lazy                 ( Text
-                                                , unpack
-                                                )
-import qualified Data.Text.Lazy                as L
 import qualified Options.Applicative           as O
-import           System.IO
-import           Text.Show
 
 data CliCommand
   = Add Description Project Contexts
+  | Complete ActionId
   | Remove
   | Projects
   | Contexts
@@ -32,6 +24,7 @@ data CliCommand
 resolveCliCommand :: IO (Maybe CliCommand)
 resolveCliCommand = O.execParser parserInfo
 
+type ActionId = Text
 type Description = Text
 type Project = Text
 type Contexts = [Text]
@@ -45,6 +38,7 @@ parser' = O.optional $ (O.subparser . F.foldMap command)
     , "Add new action"
     , Add <$> actionParam <*> projectOption <*> contextOptions
     )
+  , ("complete", "Complete an action."      , Complete <$> actionIdParam)
   , ("rm"      , "Remove an action"         , pure Remove)
   , ("projects", "Show projects"            , pure Projects)
   , ("contexts", "Show contexts"            , pure Contexts)
@@ -60,6 +54,9 @@ command (cmdName, desc, parser) =
 
 actionParam :: O.Parser Text
 actionParam = O.argument O.str (O.metavar "ACTION")
+
+actionIdParam :: O.Parser Text
+actionIdParam = O.argument O.str (O.metavar "ACTION_ID")
 
 -- Saving this here as a reference on how to parse a bunch of optional positional arguments
 -- addParams :: O.Parser (Maybe [String])
@@ -77,7 +74,7 @@ projectOption = O.strOption
   )
 
 contextOptions :: O.Parser Contexts
-contextOptions = fmap (L.splitOn ",") contextAsStringParser
+contextOptions = fmap (splitOn ",") contextAsStringParser
 
 contextAsStringParser :: O.Parser Text
 contextAsStringParser = O.strOption
