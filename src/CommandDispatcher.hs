@@ -8,7 +8,7 @@ import qualified Data.UUID.V4                  as UUID4
 import           Action
 import           Command
 import           Infra.YamlFileIO
-import           Formatter
+import           Infra.Printer
 
 dispatchCommand :: Command -> YamlFilePath -> IO ()
 dispatchCommand Default filePath = listActions filePath
@@ -22,7 +22,7 @@ dispatchCommand (Cancel actionId) filePath =
 listActions :: Text -> IO ()
 listActions filePath = do
   actions <- readActions filePath
-  putStrLn (format actions)
+  ghtdPrint actions
 
 addNewAction :: Description -> Project -> Contexts -> YamlFilePath -> IO ()
 addNewAction description project contexts filePath = do
@@ -30,7 +30,7 @@ addNewAction description project contexts filePath = do
   actionId <- UUID4.nextRandom
   let newActions = addAction actions actionId description project contexts
   _ <- writeActions filePath newActions
-  putStrLn $ format newActions
+  ghtdPrint newActions
 
 changeActionState
   :: ActionsModifier -> ActionId -> YamlFilePath -> IO ()
@@ -38,5 +38,5 @@ changeActionState actionsModifier aId filePath = do
   actions <- readActions filePath
   let newActions = actionsModifier actions aId
   _ <- writeActions filePath newActions
-  putStrLn $ format newActions
+  ghtdPrint newActions
 
