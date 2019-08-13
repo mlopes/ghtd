@@ -15,7 +15,7 @@ format :: GhtdFormatable a => a -> Text
 format = ghtdFormat
 
 indexList :: [a] -> [(Text, a)]
-indexList = zip (fmap (pack . show) [4 :: Integer ..])
+indexList = zip (fmap (pack . show) [1 :: Integer ..])
 
 textListToLines :: [Text] -> Text
 textListToLines = intercalate "\n\n"
