@@ -33,10 +33,10 @@ addNewAction description project contexts filePath = do
   putStrLn $ format newActions
 
 changeActionState
-  :: ([Action] -> ActionId -> [Action]) -> ActionId -> YamlFilePath -> IO ()
-changeActionState f aId filePath = do
+  :: ActionsModifier -> ActionId -> YamlFilePath -> IO ()
+changeActionState actionsModifier aId filePath = do
   actions <- readActions filePath
-  let newActions = f actions aId
+  let newActions = actionsModifier actions aId
   _ <- writeActions filePath newActions
   putStrLn $ format newActions
 

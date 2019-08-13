@@ -5,6 +5,7 @@ module Action
   , Description
   , Project
   , Contexts
+  , ActionsModifier
   , addAction
   , completeAction
   , cancelAction
@@ -18,6 +19,8 @@ type Description = Text
 type Project = Text
 type Contexts = [Text]
 
+type ActionsModifier = [Action] -> ActionId -> [Action]
+
 data ActionState = ToDo
                  | Done
                  | Cancelled
@@ -29,10 +32,10 @@ data Action =
 addAction :: [Action] -> UUID -> Description -> Project -> Contexts -> [Action]
 addAction as a d p c = Action (textNoDashesUUID4 a) d p c ToDo : as
 
-completeAction :: [Action] -> ActionId -> [Action]
+completeAction :: ActionsModifier
 completeAction actions aId = fmap (\x -> modifyState aId x Done) actions
 
-cancelAction :: [Action] -> ActionId -> [Action]
+cancelAction :: ActionsModifier
 cancelAction actions aId = fmap (\x -> modifyState aId x Cancelled) actions
 
 modifyState :: Text -> Action -> ActionState -> Action
