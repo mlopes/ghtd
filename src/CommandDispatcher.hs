@@ -11,19 +11,26 @@ import           Infra.YamlFileIO
 import           Formatter
 
 dispatchCommand :: Command -> Text -> IO ()
-dispatchCommand Default filePath = do
-  actions <- readActions filePath
-  putStrLn (format actions)
-dispatchCommand (Add description project contexts) filePath = do
-  actionId <- UUID4.nextRandom
-  actions  <- readActions filePath
-  let newActions = addAction actions actionId description project contexts
-  _ <- writeActions filePath newActions
-  putStrLn $ format newActions
+dispatchCommand Default filePath = listActions filePath
+dispatchCommand (Add description project contexts) filePath =
+  addNewAction description project contexts filePath
 dispatchCommand (Complete actionId) filePath =
   changeActionState completeAction actionId filePath
 dispatchCommand (Cancel actionId) filePath =
   changeActionState cancelAction actionId filePath
+
+listActions :: Text -> IO ()
+listActions filePath = do
+  actions <- readActions filePath
+  putStrLn (format actions)
+
+addNewAction :: Text -> Text -> [Text] -> Text -> IO ()
+addNewAction description project contexts filePath = do
+  actions  <- readActions filePath
+  actionId <- UUID4.nextRandom
+  let newActions = addAction actions actionId description project contexts
+  _ <- writeActions filePath newActions
+  putStrLn $ format newActions
 
 changeActionState
   :: ([Action] -> ActionId -> [Action]) -> ActionId -> Text -> IO ()
