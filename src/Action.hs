@@ -2,6 +2,9 @@ module Action
   ( Action(..)
   , ActionState(..)
   , ActionId
+  , Description
+  , Project
+  , Contexts
   , addAction
   , completeAction
   , cancelAction

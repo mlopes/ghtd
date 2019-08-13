@@ -6,6 +6,7 @@ module Infra.YamlFileIO
   ( readActions
   , writeActions
   , addAction
+  , YamlFilePath
   )
 where
 
