@@ -1,10 +1,6 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Main where
-
-
-import           ClassyPrelude
 
 import           CliCommand
 import           CommandDispatcher

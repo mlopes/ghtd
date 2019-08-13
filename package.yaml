@@ -20,7 +20,7 @@ extra-source-files:
 description:         Please see the README on GitHub at <https://github.com/githubuser/ghtd#readme>
 
 dependencies:
-- base>= 4.12 && < 5
+- base-noprelude>= 4.12 && < 5
 - classy-prelude
 
 library:

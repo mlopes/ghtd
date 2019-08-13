@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 
 module CliCommand
   ( resolveCliCommand
@@ -7,7 +6,6 @@ module CliCommand
   )
 where
 
-import           ClassyPrelude
 import           Data.Text                      ( splitOn )
 import qualified Data.Foldable                 as F
 import qualified Options.Applicative           as O

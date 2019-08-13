@@ -1,11 +1,8 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-
 module CommandDispatcher
   ( dispatchCommand
   )
 where
 
-import           ClassyPrelude
 import           Data.UUID
 import qualified Data.UUID.V4                  as UUID4
 

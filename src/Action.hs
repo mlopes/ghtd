@@ -1,12 +1,8 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-
 module Action
   ( Action(..)
   , ActionState(..)
   )
 where
-
-import           ClassyPrelude
 
 type ActionId = Text
 type Description = Text

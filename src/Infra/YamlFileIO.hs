@@ -1,7 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 
 module Infra.YamlFileIO
   ( readActions
@@ -10,7 +9,6 @@ module Infra.YamlFileIO
   )
 where
 
-import           ClassyPrelude
 import qualified Data.Yaml                     as Y
 import           Data.String.Interpolate        ( i )
 import           Action
