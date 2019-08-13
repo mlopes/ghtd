@@ -2,12 +2,12 @@
 
 module Main where
 
-import           CliCommand
+import           Command
 import           CommandDispatcher
 
 main :: IO ()
 main = do
-  command <- resolveCliCommand
+  command <- resolveCommand
   dispatchCommand command yamlFilePath
 
 yamlFilePath :: Text
