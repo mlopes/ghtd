@@ -20,13 +20,6 @@ import           Data.Yaml                      ( FromJSON(..)
 
 type YamlFilePath = Text
 
-addAction :: YamlFilePath -> Action -> IO ()
-addAction f a = do
-  let filePath = unpack f
-  existingActions <- readActions f
-  let newActionList = a : existingActions
-  Y.encodeFile filePath newActionList
-
 readActions :: YamlFilePath -> IO [Action]
 readActions f = do
   let filePath = unpack f
