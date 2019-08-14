@@ -10,6 +10,7 @@ import qualified Data.Foldable                 as F
 import qualified Options.Applicative           as O
 
 import Domain.Command
+import Domain.Action
 
 data CliCommand
   = CmdAdd Description Project Contexts
@@ -24,11 +25,6 @@ mapCliCommandToCommand Nothing                = Default
 mapCliCommandToCommand (Just (CmdAdd d p c )) = Add d p c
 mapCliCommandToCommand (Just (CmdComplete a)) = Complete a
 mapCliCommandToCommand (Just (CmdCancel   a)) = Cancel a
-
-type ActionId = Text
-type Description = Text
-type Project = Text
-type Contexts = [Text]
 
 parserInfo :: O.ParserInfo (Maybe CliCommand)
 parserInfo = info' parser' "This is the main prog desc"
@@ -63,7 +59,7 @@ projectOption :: O.Parser Project
 projectOption = O.strOption
   (mconcat
     [ O.help "Project name."
-    , O.value "inbox"
+    , O.value defaultProject
     , O.showDefault
     , O.long "project"
     , O.short 'p'
@@ -78,7 +74,7 @@ contextAsStringParser :: O.Parser Text
 contextAsStringParser = O.strOption
   (mconcat
     [ O.help "Contexts for the action."
-    , O.value ""
+    , O.value $ intercalate "," defaultContexts
     , O.showDefault
     , O.long "contexts"
     , O.short 'c'

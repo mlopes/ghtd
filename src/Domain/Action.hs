@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Domain.Action
   ( Action(..)
   , ActionState(..)
@@ -6,6 +8,8 @@ module Domain.Action
   , Project
   , Contexts
   , ActionsModifier
+  , defaultProject
+  , defaultContexts
   , addAction
   , completeAction
   , cancelAction
@@ -28,6 +32,12 @@ data ActionState = ToDo
 
 data Action =
   Action ActionId Description Project Contexts ActionState
+
+defaultProject :: Text
+defaultProject = "Inbox"
+
+defaultContexts :: [Text]
+defaultContexts = []
 
 addAction :: [Action] -> UUID -> Description -> Project -> Contexts -> [Action]
 addAction as a d p c = Action (textNoDashesUUID4 a) d p c ToDo : as
