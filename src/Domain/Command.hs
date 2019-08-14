@@ -9,6 +9,7 @@ data Command
   = Add Description Project Contexts
   | Complete ActionId
   | Cancel ActionId
+  | ListProjects
   | Default
   deriving (Show)
 

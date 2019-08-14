@@ -4,6 +4,7 @@ module CommandDispatcher
 where
 
 import qualified Data.UUID.V4                  as UUID4
+import Data.List
 
 import           Domain.Action
 import           Domain.Command
@@ -18,9 +19,19 @@ dispatchCommand (Complete actionId) filePath =
   changeActionState completeAction actionId filePath
 dispatchCommand (Cancel actionId) filePath =
   changeActionState cancelAction actionId filePath
+dispatchCommand ListProjects filePath = listProjects filePath
 
-listActions :: Text -> IO ()
+listActions :: YamlFilePath -> IO ()
 listActions filePath = readActions filePath >>= ghtdPrint
+
+listProjects :: YamlFilePath -> IO ()
+listProjects filePath = readActions filePath >>= ghtdPrint . nub . actionsToProjects
+
+actionsToProjects :: [Action] -> [Project]
+actionsToProjects = fmap actionToProject
+
+actionToProject :: Action -> Project
+actionToProject (Action _ _ p _ _) = p
 
 addNewAction :: Description -> Project -> Contexts -> YamlFilePath -> IO ()
 addNewAction description project contexts filePath = do

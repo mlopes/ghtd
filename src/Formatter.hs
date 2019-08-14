@@ -47,3 +47,7 @@ instance GhtdFormatable Action where
 instance GhtdFormatable [Action] where
   ghtdFormat = textListToLines . actionListToTextList . indexList
 
+
+instance GhtdFormatable [Project] where
+  ghtdFormat = intercalate "\n"
+
