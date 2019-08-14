@@ -20,17 +20,16 @@ dispatchCommand (Cancel actionId) filePath =
   changeActionState cancelAction actionId filePath
 
 listActions :: Text -> IO ()
-listActions filePath = do
-  actions <- readActions filePath
-  ghtdPrint actions
+listActions filePath = readActions filePath >>= ghtdPrint
 
 addNewAction :: Description -> Project -> Contexts -> YamlFilePath -> IO ()
 addNewAction description project contexts filePath = do
   actions  <- readActions filePath
   actionId <- UUID4.nextRandom
-  let newActions = addAction actions actionId description project contexts
-  _ <- writeActions filePath newActions
-  ghtdPrint newActions
+  writeActionsAndOutputAction filePath $ addAction actions actionId description project contexts
+
+writeActionsAndOutputAction :: YamlFilePath -> (Action, [Action]) -> IO ()
+writeActionsAndOutputAction f (a, as) = writeActions f as >> ghtdPrint a
 
 changeActionState
   :: ActionsModifier -> ActionId -> YamlFilePath -> IO ()

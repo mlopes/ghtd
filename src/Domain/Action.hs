@@ -39,8 +39,10 @@ defaultProject = "Inbox"
 defaultContexts :: [Text]
 defaultContexts = []
 
-addAction :: [Action] -> UUID -> Description -> Project -> Contexts -> [Action]
-addAction as a d p c = Action (textNoDashesUUID4 a) d p c ToDo : as
+addAction :: [Action] -> UUID -> Description -> Project -> Contexts -> (Action, [Action])
+addAction as a d p c =
+  (action, action : as)
+  where action = Action (textNoDashesUUID4 a) d p c ToDo
 
 completeAction :: ActionsModifier
 completeAction actions aId = fmap (\x -> modifyState aId x Done) actions
