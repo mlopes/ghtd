@@ -12,7 +12,7 @@ where
 
 import qualified Data.Yaml                     as Y
 import           Data.String.Interpolate        ( i )
-import           Action
+import           Domain.Action
 import           Data.Yaml                      ( FromJSON(..)
                                                 , (.:)
                                                 , ToJSON(..)

@@ -2,7 +2,7 @@
 
 module Main where
 
-import           Command
+import           Infra.CliParser
 import           CommandDispatcher
 
 main :: IO ()

@@ -10,7 +10,7 @@ where
 
 import           Data.String.Interpolate        ( i )
 
-import           Action
+import           Domain.Action
 
 format :: GhtdFormatable a => a -> Text
 format = ghtdFormat

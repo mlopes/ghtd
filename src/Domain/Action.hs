@@ -1,4 +1,4 @@
-module Action
+module Domain.Action
   ( Action(..)
   , ActionState(..)
   , ActionId

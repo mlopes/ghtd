@@ -5,8 +5,8 @@ where
 
 import qualified Data.UUID.V4                  as UUID4
 
-import           Action
-import           Command
+import           Domain.Action
+import           Domain.Command
 import           Infra.YamlFileIO
 import           Infra.Printer
 

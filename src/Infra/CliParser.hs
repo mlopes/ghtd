@@ -1,8 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Command
+module Infra.CliParser
   ( resolveCommand
-  , Command(..)
   )
 where
 
@@ -10,17 +9,12 @@ import           Data.Text                      ( splitOn )
 import qualified Data.Foldable                 as F
 import qualified Options.Applicative           as O
 
+import Domain.Command
+
 data CliCommand
   = CmdAdd Description Project Contexts
   | CmdComplete ActionId
   | CmdCancel ActionId
-
-data Command
-  = Add Description Project Contexts
-  | Complete ActionId
-  | Cancel ActionId
-  | Default
-  deriving (Show)
 
 resolveCommand :: IO Command
 resolveCommand = mapCliCommandToCommand <$> O.execParser parserInfo
