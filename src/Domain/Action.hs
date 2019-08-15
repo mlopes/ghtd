@@ -46,7 +46,12 @@ defaultContexts = []
 addAction :: [Action] -> UUID -> Description -> Project -> Contexts -> (Action, [Action])
 addAction as a d p c =
   (action, action : as)
-  where action = Action (textNoDashesUUID4 a) d p c ToDo
+  where
+    action = Action (textNoDashesUUID4 a) d p c ToDo
+    textNoDashesUUID4 :: UUID -> Text
+    textNoDashesUUID4 = stripDashes . toText
+    stripDashes :: Text -> Text
+    stripDashes = filter ('-' /=)
 
 completeAction :: ActionsModifier
 completeAction actions aId = fmap (\x -> modifyState aId x Done) actions
@@ -56,15 +61,15 @@ cancelAction actions aId = fmap (\x -> modifyState aId x Cancelled) actions
 
 projectsFromActions :: [Action] -> [Project]
 projectsFromActions = nub . fmap projectFromAction
+  where
+    projectFromAction :: Action -> Project
+    projectFromAction (Action _ _ p _ _) = p
 
 contextsFromActions :: [Action] -> Contexts
 contextsFromActions a =  nub (a >>= contextsFromAction)
-
-contextsFromAction :: Action -> Contexts
-contextsFromAction (Action _ _ _ c _) = c
-
-projectFromAction :: Action -> Project
-projectFromAction (Action _ _ p _ _) = p
+  where
+    contextsFromAction :: Action -> Contexts
+    contextsFromAction (Action _ _ _ c _) = c
 
 modifyState :: Text -> Action -> ActionState -> Action
 modifyState aid (Action actionId description project contexts state) newState
@@ -74,10 +79,4 @@ modifyState aid (Action actionId description project contexts state) newState
                                               contexts
                                               newState
 modifyState _ action _ = action
-
-textNoDashesUUID4 :: UUID -> Text
-textNoDashesUUID4 = stripDashes . toText
-
-stripDashes :: Text -> Text
-stripDashes = filter ('-' /=)
 
