@@ -14,6 +14,7 @@ module Domain.Action
   , completeAction
   , cancelAction
   , projectsFromActions
+  , contextsFromActions
   )
 where
 
@@ -23,7 +24,8 @@ import Data.List (nub)
 type ActionId = Text
 type Description = Text
 type Project = Text
-type Contexts = [Text]
+type Context = Text
+type Contexts = [Context]
 
 type ActionsModifier = [Action] -> ActionId -> [Action]
 
@@ -54,6 +56,12 @@ cancelAction actions aId = fmap (\x -> modifyState aId x Cancelled) actions
 
 projectsFromActions :: [Action] -> [Project]
 projectsFromActions = nub . fmap projectFromAction
+
+contextsFromActions :: [Action] -> Contexts
+contextsFromActions a =  nub (a >>= contextsFromAction)
+
+contextsFromAction :: Action -> Contexts
+contextsFromAction (Action _ _ _ c _) = c
 
 projectFromAction :: Action -> Project
 projectFromAction (Action _ _ p _ _) = p

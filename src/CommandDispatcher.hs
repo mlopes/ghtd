@@ -19,12 +19,16 @@ dispatchCommand (Complete actionId) filePath =
 dispatchCommand (Cancel actionId) filePath =
   changeActionState cancelAction actionId filePath
 dispatchCommand ListProjects filePath = listProjects filePath
+dispatchCommand ListContexts filePath = listContexts filePath
 
 listActions :: YamlFilePath -> IO ()
 listActions filePath = readActions filePath >>= ghtdPrint
 
 listProjects :: YamlFilePath -> IO ()
 listProjects filePath = readActions filePath >>= ghtdPrint . projectsFromActions
+
+listContexts :: YamlFilePath -> IO ()
+listContexts filePath = readActions filePath >>= ghtdPrint . contextsFromActions
 
 addNewAction :: Description -> Project -> Contexts -> YamlFilePath -> IO ()
 addNewAction description project contexts filePath = do

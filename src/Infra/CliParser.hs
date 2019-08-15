@@ -6,6 +6,7 @@ module Infra.CliParser
 where
 
 import           Data.Text                      ( splitOn )
+import Data.List (nub)
 import qualified Data.Foldable                 as F
 import qualified Options.Applicative           as O
 
@@ -17,6 +18,7 @@ data CliCommand
   | CmdComplete ActionId
   | CmdCancel ActionId
   | CmdProject
+  | CmdContext
 
 resolveCommand :: IO Command
 resolveCommand = mapCliCommandToCommand <$> O.execParser parserInfo
@@ -27,6 +29,7 @@ mapCliCommandToCommand (Just (CmdAdd d p c )) = Add d p c
 mapCliCommandToCommand (Just (CmdComplete a)) = Complete a
 mapCliCommandToCommand (Just (CmdCancel   a)) = Cancel a
 mapCliCommandToCommand (Just CmdProject) = ListProjects
+mapCliCommandToCommand (Just CmdContext) = ListContexts
 
 parserInfo :: O.ParserInfo (Maybe CliCommand)
 parserInfo = info' parser' "This is the main prog desc"
@@ -40,6 +43,7 @@ parser' = O.optional $ (O.subparser . F.foldMap command)
   , ("complete", "Complete an action.", CmdComplete <$> actionIdParam)
   , ("cancel"  , "Cancel an action."  , CmdCancel <$> actionIdParam)
   , ("project", "Project management.", pure CmdProject)
+  , ("context", "Context management.", pure CmdContext)
   ]
 
 info' :: O.Parser a -> Text -> O.ParserInfo a
@@ -71,7 +75,7 @@ projectOption = O.strOption
   )
 
 contextOptions :: O.Parser Contexts
-contextOptions = fmap (splitOn ",") contextAsStringParser
+contextOptions = fmap (nub . splitOn ",") contextAsStringParser
 
 contextAsStringParser :: O.Parser Text
 contextAsStringParser = O.strOption

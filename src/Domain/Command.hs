@@ -10,6 +10,7 @@ data Command
   | Complete ActionId
   | Cancel ActionId
   | ListProjects
+  | ListContexts
   | Default
   deriving (Show)
 
