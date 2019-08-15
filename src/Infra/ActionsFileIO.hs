@@ -5,11 +5,10 @@
 module Infra.ActionsFileIO
   ( readActions
   , writeActions
-  , addAction
-  , ActionsFilePath
   )
 where
 
+import qualified Data.UUID.V4                  as UUID4
 import qualified Data.Yaml                     as Y
 import           Data.String.Interpolate        ( i )
 import           Domain.Action
@@ -19,18 +18,15 @@ import           Data.Yaml                      ( FromJSON(..)
                                                 , (.=)
                                                 )
 
-type ActionsFilePath = Text
+import           Infra.YamlFileIO
 
-readActions :: ActionsFilePath -> IO [Action]
-readActions f = do
-  let filePath = unpack f
-  fileReadResult <-
-    Y.decodeFileEither filePath :: IO (Either Y.ParseException [Action])
-  case fileReadResult of
-    Left  e  -> fail $ Y.prettyPrintParseException e
-    Right as -> return as
+readActions :: YamlFilePath -> IO [Action]
+readActions filePath = do
+  actionId <- UUID4.nextRandom
+  let (newAction, _) = addAction [] actionId "Welcome to ghtd. Run ghtd --help to know more." defaultProject defaultContexts
+  readYamlFile [newAction] filePath
 
-writeActions :: ActionsFilePath -> [Action] -> IO ()
+writeActions :: YamlFilePath -> [Action] -> IO ()
 writeActions filePath = Y.encodeFile (unpack filePath)
 
 instance FromJSON Action where
