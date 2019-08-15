@@ -7,7 +7,6 @@ module Infra.CheckoutFileIO
 where
 
 
-import           System.Directory
 import           Data.String.Interpolate        ( i )
 import qualified Data.Yaml                     as Y
 import           Data.Yaml                      ( FromJSON(..)
@@ -17,38 +16,15 @@ import           Data.Yaml                      ( FromJSON(..)
                                                 )
 
 
+import Infra.YamlFileIO
 import           Domain.Action
 
-type CheckoutFilePath = Text
-
 data CheckoutState = CheckoutState CheckoutObject CheckoutObjectName
-
 data CheckoutObject = ProjectObject | ContextObject
-
 type CheckoutObjectName = Text
 
-readCheckoutState :: CheckoutFilePath -> IO CheckoutState
-readCheckoutState filePath = do
-  isFileThere <- fileExists
-  if isFileThere then readCheckoutStateFile filePath else
-    writeCheckoutStateFile filePath (CheckoutState ProjectObject defaultProject)
-      >> readCheckoutStateFile filePath
- where
-  fileExists :: IO Bool
-  fileExists = doesFileExist (unpack filePath)
-
-readCheckoutStateFile :: CheckoutFilePath -> IO CheckoutState
-readCheckoutStateFile f = do
-  let filePath = unpack f
-  fileReadResult <-
-    Y.decodeFileEither filePath :: IO (Either Y.ParseException CheckoutState)
-  case fileReadResult of
-    Left  e  -> fail $ Y.prettyPrintParseException e
-    Right cs -> return cs
-
-writeCheckoutStateFile :: CheckoutFilePath -> CheckoutState -> IO ()
-writeCheckoutStateFile filePath = Y.encodeFile (unpack filePath)
-
+readCheckoutState :: YamlFilePath -> IO CheckoutState
+readCheckoutState = readYamlFile (CheckoutState ProjectObject defaultProject)
 
 instance FromJSON CheckoutState where
   parseJSON (Y.Object v) = CheckoutState <$> v .: "object" <*> v .: "name"

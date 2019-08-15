@@ -1,7 +1,8 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Infra.FileIO
+module Infra.YamlFileIO
   ( readYamlFile
+  , YamlFilePath
   )
 where
 
@@ -15,8 +16,8 @@ import           Data.Yaml                      ( FromJSON(..)
 
 type YamlFilePath = Text
 
-readYamlFile :: (ToJSON a, FromJSON a) => YamlFilePath -> a -> IO a
-readYamlFile filePath defaultOnNewfIle = do
+readYamlFile :: (ToJSON a, FromJSON a) => a -> YamlFilePath -> IO a
+readYamlFile defaultOnNewfIle filePath = do
   isFileThere <- fileExists
   if isFileThere
     then readFromFile filePath
