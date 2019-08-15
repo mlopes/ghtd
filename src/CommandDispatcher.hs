@@ -7,10 +7,10 @@ import qualified Data.UUID.V4                  as UUID4
 
 import           Domain.Action
 import           Domain.Command
-import           Infra.YamlFileIO
+import           Infra.ActionsFileIO
 import           Infra.Printer
 
-dispatchCommand :: Command -> YamlFilePath -> IO ()
+dispatchCommand :: Command -> ActionsFilePath -> IO ()
 dispatchCommand Default filePath = listActions
   where
     listActions ::  IO ()
@@ -35,7 +35,7 @@ dispatchCommand ListContexts filePath = listContexts
     listContexts = readActions filePath >>= ghtdPrint . contextsFromActions
 
 changeActionState
-  :: ActionsModifier -> ActionId -> YamlFilePath -> IO ()
+  :: ActionsModifier -> ActionId -> ActionsFilePath -> IO ()
 changeActionState actionsModifier aId filePath = do
   actions <- readActions filePath
   let newActions = actionsModifier actions aId

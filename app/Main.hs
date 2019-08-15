@@ -8,7 +8,10 @@ import           CommandDispatcher
 main :: IO ()
 main = do
   command <- resolveCommand
-  dispatchCommand command yamlFilePath
+  dispatchCommand command actionsFilePath
 
-yamlFilePath :: Text
-yamlFilePath = "./data/sample.yaml"
+actionsFilePath :: Text
+actionsFilePath = "./data/sample.yaml"
+
+checkoutFilePath :: Text
+checkoutFilePath = "./data/checkout.yaml"

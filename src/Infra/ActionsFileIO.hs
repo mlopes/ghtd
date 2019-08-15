@@ -2,11 +2,11 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Infra.YamlFileIO
+module Infra.ActionsFileIO
   ( readActions
   , writeActions
   , addAction
-  , YamlFilePath
+  , ActionsFilePath
   )
 where
 
@@ -19,9 +19,9 @@ import           Data.Yaml                      ( FromJSON(..)
                                                 , (.=)
                                                 )
 
-type YamlFilePath = Text
+type ActionsFilePath = Text
 
-readActions :: YamlFilePath -> IO [Action]
+readActions :: ActionsFilePath -> IO [Action]
 readActions f = do
   let filePath = unpack f
   fileReadResult <-
@@ -30,7 +30,7 @@ readActions f = do
     Left  e  -> fail $ Y.prettyPrintParseException e
     Right as -> return as
 
-writeActions :: YamlFilePath -> [Action] -> IO ()
+writeActions :: ActionsFilePath -> [Action] -> IO ()
 writeActions filePath = Y.encodeFile (unpack filePath)
 
 instance FromJSON Action where

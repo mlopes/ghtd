@@ -34,6 +34,7 @@ library:
   - text
   - string-interpolate
   - uuid
+  - directory
 
 executables:
   ghtd-exe:
