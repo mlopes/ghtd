@@ -12,32 +12,28 @@ import           Infra.Printer
 
 dispatchCommand :: Command -> YamlFilePath -> IO ()
 dispatchCommand Default filePath = listActions filePath
-dispatchCommand (Add description project contexts) filePath =
-  addNewAction description project contexts filePath
+dispatchCommand (Add description project contexts) filePath = addNewAction
+  where
+    addNewAction = do
+      actions  <- readActions filePath
+      actionId <- UUID4.nextRandom
+      writeActionsAndOutputAction $ addAction actions actionId description project contexts
+    writeActionsAndOutputAction :: (Action, [Action]) -> IO ()
+    writeActionsAndOutputAction (a, as) = writeActions filePath as >> ghtdPrint a
 dispatchCommand (Complete actionId) filePath =
   changeActionState completeAction actionId filePath
 dispatchCommand (Cancel actionId) filePath =
   changeActionState cancelAction actionId filePath
-dispatchCommand ListProjects filePath = listProjects filePath
-dispatchCommand ListContexts filePath = listContexts filePath
+dispatchCommand ListProjects filePath = listProjects
+  where
+    listProjects = readActions filePath >>= ghtdPrint . projectsFromActions
+dispatchCommand ListContexts filePath = listContexts
+  where
+    listContexts = readActions filePath >>= ghtdPrint . contextsFromActions
 
 listActions :: YamlFilePath -> IO ()
 listActions filePath = readActions filePath >>= ghtdPrint
 
-listProjects :: YamlFilePath -> IO ()
-listProjects filePath = readActions filePath >>= ghtdPrint . projectsFromActions
-
-listContexts :: YamlFilePath -> IO ()
-listContexts filePath = readActions filePath >>= ghtdPrint . contextsFromActions
-
-addNewAction :: Description -> Project -> Contexts -> YamlFilePath -> IO ()
-addNewAction description project contexts filePath = do
-  actions  <- readActions filePath
-  actionId <- UUID4.nextRandom
-  writeActionsAndOutputAction filePath $ addAction actions actionId description project contexts
-
-writeActionsAndOutputAction :: YamlFilePath -> (Action, [Action]) -> IO ()
-writeActionsAndOutputAction f (a, as) = writeActions f as >> ghtdPrint a
 
 changeActionState
   :: ActionsModifier -> ActionId -> YamlFilePath -> IO ()
