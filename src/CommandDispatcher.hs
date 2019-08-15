@@ -4,7 +4,6 @@ module CommandDispatcher
 where
 
 import qualified Data.UUID.V4                  as UUID4
-import Data.List
 
 import           Domain.Action
 import           Domain.Command
@@ -25,13 +24,7 @@ listActions :: YamlFilePath -> IO ()
 listActions filePath = readActions filePath >>= ghtdPrint
 
 listProjects :: YamlFilePath -> IO ()
-listProjects filePath = readActions filePath >>= ghtdPrint . nub . actionsToProjects
-
-actionsToProjects :: [Action] -> [Project]
-actionsToProjects = fmap actionToProject
-
-actionToProject :: Action -> Project
-actionToProject (Action _ _ p _ _) = p
+listProjects filePath = readActions filePath >>= ghtdPrint . projectsFromActions
 
 addNewAction :: Description -> Project -> Contexts -> YamlFilePath -> IO ()
 addNewAction description project contexts filePath = do

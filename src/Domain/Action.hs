@@ -13,10 +13,12 @@ module Domain.Action
   , addAction
   , completeAction
   , cancelAction
+  , projectsFromActions
   )
 where
 
 import Data.UUID
+import Data.List (nub)
 
 type ActionId = Text
 type Description = Text
@@ -49,6 +51,12 @@ completeAction actions aId = fmap (\x -> modifyState aId x Done) actions
 
 cancelAction :: ActionsModifier
 cancelAction actions aId = fmap (\x -> modifyState aId x Cancelled) actions
+
+projectsFromActions :: [Action] -> [Project]
+projectsFromActions = nub . fmap projectFromAction
+
+projectFromAction :: Action -> Project
+projectFromAction (Action _ _ p _ _) = p
 
 modifyState :: Text -> Action -> ActionState -> Action
 modifyState aid (Action actionId description project contexts state) newState
