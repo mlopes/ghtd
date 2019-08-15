@@ -11,7 +11,10 @@ import           Infra.YamlFileIO
 import           Infra.Printer
 
 dispatchCommand :: Command -> YamlFilePath -> IO ()
-dispatchCommand Default filePath = listActions filePath
+dispatchCommand Default filePath = listActions
+  where
+    listActions ::  IO ()
+    listActions = readActions filePath >>= ghtdPrint
 dispatchCommand (Add description project contexts) filePath = addNewAction
   where
     addNewAction = do
@@ -30,10 +33,6 @@ dispatchCommand ListProjects filePath = listProjects
 dispatchCommand ListContexts filePath = listContexts
   where
     listContexts = readActions filePath >>= ghtdPrint . contextsFromActions
-
-listActions :: YamlFilePath -> IO ()
-listActions filePath = readActions filePath >>= ghtdPrint
-
 
 changeActionState
   :: ActionsModifier -> ActionId -> YamlFilePath -> IO ()
