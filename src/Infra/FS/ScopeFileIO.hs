@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Infra.FS.ScopeFileIO
   ( loadScope
   )
 where
-
 
 import           Data.String.Interpolate        ( i )
 import qualified Data.Yaml                     as Y
@@ -15,13 +15,9 @@ import           Data.Yaml                      ( FromJSON(..)
                                                 , (.=)
                                                 )
 
-
-import Infra.FS.YamlFileIO
+import           Infra.FS.YamlFileIO
 import           Domain.Action
-
-data Scope = Scope ScopeType ScopeName
-data ScopeType = ProjectScope | ContextScope
-type ScopeName = Text
+import           Domain.Scope
 
 loadScope :: YamlFilePath -> IO Scope
 loadScope = readYamlFile (Scope ProjectScope defaultProject)

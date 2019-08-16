@@ -27,7 +27,7 @@ readActions filePath = do
   readYamlFile [newAction] filePath
 
 writeActions :: YamlFilePath -> [Action] -> IO ()
-writeActions filePath = Y.encodeFile (unpack filePath)
+writeActions = writeYamlFile
 
 instance FromJSON Action where
   parseJSON (Y.Object v) =

@@ -17,3 +17,4 @@ actionsFilePath = "./data/sample.yaml"
 
 scopeFilePath :: Text
 scopeFilePath = "./data/scope.yaml"
+

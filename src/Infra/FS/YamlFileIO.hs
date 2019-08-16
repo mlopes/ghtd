@@ -2,6 +2,7 @@
 
 module Infra.FS.YamlFileIO
   ( readYamlFile
+  , writeYamlFile
   , YamlFilePath
   )
 where
@@ -21,10 +22,13 @@ readYamlFile defaultOnNewfIle filePath = do
   isFileThere <- fileExists
   if isFileThere
     then readFromFile filePath
-    else writeToFile filePath defaultOnNewfIle >> readFromFile filePath
+    else writeYamlFile filePath defaultOnNewfIle >> readFromFile filePath
  where
   fileExists :: IO Bool
   fileExists = doesFileExist (unpack filePath)
+
+writeYamlFile :: ToJSON a => YamlFilePath -> a -> IO ()
+writeYamlFile filePath = Y.encodeFile (unpack filePath)
 
 readFromFile :: forall a . FromJSON a => YamlFilePath -> IO a
 readFromFile f = do
@@ -34,7 +38,4 @@ readFromFile f = do
   case fileReadResult of
     Left  e            -> fail $ Y.prettyPrintParseException e
     Right fileContents -> return fileContents
-
-writeToFile :: ToJSON a => YamlFilePath -> a -> IO ()
-writeToFile filePath = Y.encodeFile (unpack filePath)
 
