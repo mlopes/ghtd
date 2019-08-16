@@ -2,18 +2,18 @@
 
 module Main where
 
-import           Infra.FS.CheckoutFileIO
+import           Infra.FS.ScopeFileIO
 import           Infra.CliParser
 import           CommandDispatcher
 
 main :: IO ()
 main = do
-  _ <- readCheckoutState checkoutFilePath
+  _ <- loadScope scopeFilePath
   command <- resolveCommand
   dispatchCommand command actionsFilePath
 
 actionsFilePath :: Text
 actionsFilePath = "./data/sample.yaml"
 
-checkoutFilePath :: Text
-checkoutFilePath = "./data/checkout.yaml"
+scopeFilePath :: Text
+scopeFilePath = "./data/scope.yaml"
