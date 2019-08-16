@@ -2,7 +2,7 @@
 
 module Main where
 
-import           Infra.CheckoutFileIO
+import           Infra.FS.CheckoutFileIO
 import           Infra.CliParser
 import           CommandDispatcher
 

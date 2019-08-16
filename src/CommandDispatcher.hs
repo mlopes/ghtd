@@ -7,8 +7,8 @@ import qualified Data.UUID.V4                  as UUID4
 
 import           Domain.Action
 import           Domain.Command
-import           Infra.ActionsFileIO
-import           Infra.YamlFileIO
+import           Infra.FS.ActionsFileIO
+import           Infra.FS.YamlFileIO (YamlFilePath)
 import           Infra.Printer
 
 dispatchCommand :: Command -> YamlFilePath -> IO ()

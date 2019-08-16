@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
 
-module Infra.CheckoutFileIO
+module Infra.FS.CheckoutFileIO
   ( readCheckoutState
   )
 where
@@ -16,7 +16,7 @@ import           Data.Yaml                      ( FromJSON(..)
                                                 )
 
 
-import Infra.YamlFileIO
+import Infra.FS.YamlFileIO
 import           Domain.Action
 
 data CheckoutState = CheckoutState CheckoutObject CheckoutObjectName

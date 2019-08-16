@@ -2,7 +2,7 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Infra.ActionsFileIO
+module Infra.FS.ActionsFileIO
   ( readActions
   , writeActions
   )
@@ -18,7 +18,7 @@ import           Data.Yaml                      ( FromJSON(..)
                                                 , (.=)
                                                 )
 
-import           Infra.YamlFileIO
+import           Infra.FS.YamlFileIO
 
 readActions :: YamlFilePath -> IO [Action]
 readActions filePath = do

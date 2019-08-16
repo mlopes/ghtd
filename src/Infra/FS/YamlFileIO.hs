@@ -1,6 +1,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Infra.YamlFileIO
+module Infra.FS.YamlFileIO
   ( readYamlFile
   , YamlFilePath
   )
