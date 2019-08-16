@@ -57,18 +57,17 @@ More features to come
 ## Plan
 
 Going forward the plan is that there will be something like an application
-context (need to come up with a name that doesn't clash with the GTD domain,
-to avoid confusion). The user checks out an application context, and calling
-ghtd will act on that application context. By default it acts on Inbox.
+*scope*. The user sets the application scope, and calling
+ghtd will act on that scope. By default it acts on project Inbox.
 
 Here's a description of the planned functionality:
 
 - `ghtd project` - lists projects
 - `ghtd context` - lists contexts
-- `ghtd project <project name>` - checks out a project
-- `ghtd context <context name>` - checks out a context
+- `ghtd project <project name>` - checks out a project into scope
+- `ghtd context <context name>` - checks out a context into scope
 
-Alternative to the two above might be `ghtd checkout <name>` which could try to figure by itself if it should checkout a project or a context. Flags could be provided to disambiguate, and by default it would fall back to project. Calling it without any parameters would checkout Inbox.
+Alternative to the two above might be `ghtd checkout <name>` which could try to figure by itself if it should checkout a project or a context. Flags could be provided to disambiguate, and by default it would fall back to project. Calling it without any parameters would checkout Inbox. Alternatively, the keyword could be `scope` which is language consistent for the user.
 
 The application will act on the checked out project/ context
 
