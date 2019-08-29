@@ -44,7 +44,7 @@ instance GhtdFormatable Action where
     , [i|(#{action})|]
     ]
 
-instance GhtdFormatable [Action] where
+instance GhtdFormatable Actions where
   ghtdFormat = textListToLines . actionListToTextList . indexList
 
 

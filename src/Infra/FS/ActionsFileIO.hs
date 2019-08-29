@@ -26,7 +26,7 @@ readActions filePath = do
   let defaultAction = createAction actionId "Welcome to ghtd. Run ghtd --help to know more." defaultProject defaultContexts
   readYamlFile [defaultAction] filePath
 
-writeActions :: YamlFilePath -> [Action] -> IO ()
+writeActions :: YamlFilePath -> Actions -> IO ()
 writeActions = writeYamlFile
 
 instance FromJSON Action where
