@@ -5,16 +5,15 @@ module Domain.Action
   , ActionState(..)
   , ActionId
   , Description
-  , Project
   , ActionsModifier
   , Actions
-  , defaultProject
   , addAction
   , completeAction
   , cancelAction
   , projectsFromActions
   , contextsOfActions
   , module Domain.Contexts
+  , module Domain.Project
   )
 where
 
@@ -22,12 +21,12 @@ import Data.UUID
 import Data.List (nub)
 
 import Domain.Contexts
+import Domain.Project
 
 type ActionId = Text
 type Description = Text
-type Project = Text
 
-type ActionsModifier = [Action] -> ActionId -> [Action]
+type ActionsModifier = Actions -> ActionId -> Actions
 
 data ActionState = ToDo
                  | Done
@@ -38,9 +37,6 @@ data Action =
   Action ActionId Description Project Contexts ActionState
 
 type Actions = [Action]
-
-defaultProject :: Text
-defaultProject = "Inbox"
 
 addAction :: Actions -> UUID -> Description -> Project -> Contexts -> (Action, Actions)
 addAction as a d p c =
@@ -58,7 +54,7 @@ completeAction actions aId = fmap (\x -> modifyState aId x Done) actions
 cancelAction :: ActionsModifier
 cancelAction actions aId = fmap (\x -> modifyState aId x Cancelled) actions
 
-projectsFromActions :: [Action] -> [Project]
+projectsFromActions :: Actions -> [Project]
 projectsFromActions = nub . fmap projectFromAction
   where
     projectFromAction :: Action -> Project
