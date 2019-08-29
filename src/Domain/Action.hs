@@ -6,26 +6,24 @@ module Domain.Action
   , ActionId
   , Description
   , Project
-  , Contexts
   , ActionsModifier
   , defaultProject
-  , defaultContexts
   , addAction
   , completeAction
   , cancelAction
   , projectsFromActions
-  , contextsFromActions
+  , contextsOfActions
   )
 where
 
 import Data.UUID
 import Data.List (nub)
 
+import Domain.Contexts
+
 type ActionId = Text
 type Description = Text
 type Project = Text
-type Context = Text
-type Contexts = [Context]
 
 type ActionsModifier = [Action] -> ActionId -> [Action]
 
@@ -39,9 +37,6 @@ data Action =
 
 defaultProject :: Text
 defaultProject = "Inbox"
-
-defaultContexts :: [Text]
-defaultContexts = []
 
 addAction :: [Action] -> UUID -> Description -> Project -> Contexts -> (Action, [Action])
 addAction as a d p c =
@@ -65,8 +60,8 @@ projectsFromActions = nub . fmap projectFromAction
     projectFromAction :: Action -> Project
     projectFromAction (Action _ _ p _ _) = p
 
-contextsFromActions :: [Action] -> Contexts
-contextsFromActions a =  nub (a >>= contextsFromAction)
+contextsOfActions :: [Action] -> Contexts
+contextsOfActions a =  nub (a >>= contextsFromAction)
   where
     contextsFromAction :: Action -> Contexts
     contextsFromAction (Action _ _ _ c _) = c

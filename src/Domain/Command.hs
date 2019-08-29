@@ -4,9 +4,10 @@ module Domain.Command
 where
 
 import Domain.Action
+import Domain.Contexts
 
 data Command
-  = Add Description Project Contexts
+  = Add Description (Maybe Project) (Maybe Contexts)
   | Complete ActionId
   | Cancel ActionId
   | ListProjects
