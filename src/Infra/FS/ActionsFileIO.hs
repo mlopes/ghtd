@@ -19,7 +19,6 @@ import           Data.Yaml                      ( FromJSON(..)
                                                 )
 
 import           Infra.FS.YamlFileIO
-import           Domain.Contexts
 
 readActions :: YamlFilePath -> IO [Action]
 readActions filePath = do

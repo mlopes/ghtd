@@ -6,7 +6,6 @@ where
 import qualified Data.UUID.V4                  as UUID4
 
 import           Domain.Action
-import Domain.Contexts
 import           Domain.Command
 import           Infra.FS.ActionsFileIO
 import           Infra.FS.YamlFileIO            ( YamlFilePath )

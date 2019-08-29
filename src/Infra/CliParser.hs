@@ -12,7 +12,6 @@ import qualified Options.Applicative           as O
 
 import Domain.Command
 import Domain.Action
-import Domain.Contexts
 
 data CliCommand
   = CmdAdd Description (Maybe Project) (Maybe Contexts)

@@ -7,12 +7,14 @@ module Domain.Action
   , Description
   , Project
   , ActionsModifier
+  , Actions
   , defaultProject
   , addAction
   , completeAction
   , cancelAction
   , projectsFromActions
   , contextsOfActions
+  , module Domain.Contexts
   )
 where
 
@@ -35,10 +37,12 @@ data ActionState = ToDo
 data Action =
   Action ActionId Description Project Contexts ActionState
 
+type Actions = [Action]
+
 defaultProject :: Text
 defaultProject = "Inbox"
 
-addAction :: [Action] -> UUID -> Description -> Project -> Contexts -> (Action, [Action])
+addAction :: Actions -> UUID -> Description -> Project -> Contexts -> (Action, Actions)
 addAction as a d p c =
   (action, action : as)
   where
@@ -60,11 +64,11 @@ projectsFromActions = nub . fmap projectFromAction
     projectFromAction :: Action -> Project
     projectFromAction (Action _ _ p _ _) = p
 
-contextsOfActions :: [Action] -> Contexts
-contextsOfActions a =  nub (a >>= contextsFromAction)
+contextsOfActions :: Actions -> Contexts
+contextsOfActions a =  nub (a >>= contextsOfAnAction)
   where
-    contextsFromAction :: Action -> Contexts
-    contextsFromAction (Action _ _ _ c _) = c
+    contextsOfAnAction :: Action -> Contexts
+    contextsOfAnAction (Action _ _ _ c _) = c
 
 modifyState :: Text -> Action -> ActionState -> Action
 modifyState aid (Action actionId description project contexts state) newState
