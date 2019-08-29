@@ -20,11 +20,11 @@ import           Data.Yaml                      ( FromJSON(..)
 
 import           Infra.FS.YamlFileIO
 
-readActions :: YamlFilePath -> IO [Action]
+readActions :: YamlFilePath -> IO Actions
 readActions filePath = do
   actionId <- UUID4.nextRandom
-  let (newAction, _) = addAction [] actionId "Welcome to ghtd. Run ghtd --help to know more." defaultProject defaultContexts
-  readYamlFile [newAction] filePath
+  let defaultAction = createAction actionId "Welcome to ghtd. Run ghtd --help to know more." defaultProject defaultContexts
+  readYamlFile [defaultAction] filePath
 
 writeActions :: YamlFilePath -> [Action] -> IO ()
 writeActions = writeYamlFile

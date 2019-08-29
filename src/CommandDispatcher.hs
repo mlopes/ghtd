@@ -25,9 +25,9 @@ dispatchCommand (Add description project contexts) filePath = addNewAction
     addNewAction = do
       actions  <- readActions filePath
       actionId <- UUID4.nextRandom
-      writeActionsAndOutputAction
-        $ addAction actions actionId description (extractA project defaultProject) (extractA contexts defaultContexts)
-    writeActionsAndOutputAction :: (Action, [Action]) -> IO ()
+      let action = createAction actionId description (extractA project defaultProject) (extractA contexts defaultContexts)
+      writeActionsAndOutputAction (action, addAction action actions)
+    writeActionsAndOutputAction :: (Action, Actions) -> IO ()
     writeActionsAndOutputAction (a, as) = writeActions filePath as >> ghtdPrint a
 
 dispatchCommand (Complete actionId) filePath =

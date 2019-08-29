@@ -8,6 +8,7 @@ module Domain.Action
   , ActionsModifier
   , Actions
   , addAction
+  , createAction
   , completeAction
   , cancelAction
   , projectsFromActions
@@ -38,15 +39,17 @@ data Action =
 
 type Actions = [Action]
 
-addAction :: Actions -> UUID -> Description -> Project -> Contexts -> (Action, Actions)
-addAction as a d p c =
-  (action, action : as)
+
+createAction :: UUID -> Description -> Project -> Contexts -> Action
+createAction uuid description project contexts = Action (textNoDashesUUID4 uuid) description project contexts ToDo
   where
-    action = Action (textNoDashesUUID4 a) d p c ToDo
     textNoDashesUUID4 :: UUID -> Text
     textNoDashesUUID4 = stripDashes . toText
     stripDashes :: Text -> Text
     stripDashes = filter ('-' /=)
+
+addAction :: Action -> Actions -> Actions
+addAction action originalActions = action : originalActions
 
 completeAction :: ActionsModifier
 completeAction actions aId = fmap (\x -> modifyState aId x Done) actions
