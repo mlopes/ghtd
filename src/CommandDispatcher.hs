@@ -16,7 +16,7 @@ import           Infra.Printer
 dispatchCommand :: Scope -> Command -> YamlFilePath -> IO ()
 dispatchCommand scope Default filePath = listActions (scopedView scope)
  where
-  listActions :: (Actions -> ScopeView) -> IO ()
+  listActions :: ScopeViewer -> IO ()
   listActions scopeViewer = scopeViewer <$> getActions >>= ghtdPrint
   getActions :: IO Actions
   getActions = readActions filePath

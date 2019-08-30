@@ -3,6 +3,7 @@ module Domain.Scope
   , ScopeType(..)
   , ScopeName
   , ScopeView
+  , ScopeViewer
   , scopedView
   )
 where
@@ -18,7 +19,9 @@ type ScopeName = Text
 
 type ScopeView = [(Text, Action)]
 
-scopedView :: Scope -> Actions -> ScopeView
+type ScopeViewer = Actions -> ScopeView
+
+scopedView :: Scope -> ScopeViewer
 scopedView (Scope ProjectScope projectName) =
   indexList . filter (\x -> projectFromAction x == projectName)
 scopedView (Scope ContextScope contextName) =
