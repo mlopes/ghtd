@@ -3,7 +3,7 @@ module Domain.Command
   )
 where
 
-import Domain.Action
+import Domain.Action.Types
 
 data Command
   = Add Description (Maybe Project) (Maybe Contexts)

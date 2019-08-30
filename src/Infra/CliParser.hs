@@ -11,7 +11,7 @@ import qualified Data.Foldable                 as F
 import qualified Options.Applicative           as O
 
 import Domain.Command
-import Domain.Action
+import Domain.Action.Types
 
 data CliCommand
   = CmdAdd Description (Maybe Project) (Maybe Contexts)
@@ -79,8 +79,6 @@ contextAsStringParser :: O.Parser Text
 contextAsStringParser = O.strOption
   (mconcat
     [ O.help "Contexts for the action."
-    , O.value $ intercalate "," defaultContexts
-    , O.showDefault
     , O.long "contexts"
     , O.short 'c'
     , O.metavar "CONTEXTS"

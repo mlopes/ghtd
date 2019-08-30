@@ -1,22 +1,26 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Domain.Contexts
+module Domain.Private.Action.Contexts
   ( contextsFromString
+    , contextsOfActions
   , defaultContexts
-  , Context
-  , Contexts
   )
 where
 
 import           Data.Text                      ( splitOn )
 import           Data.List                      ( nub )
 
-type Context = Text
-type Contexts = [Context]
+import Domain.Action.Types
 
 contextsFromString :: Text -> Contexts
 contextsFromString = nub . splitOn ","
 
 defaultContexts :: Contexts
 defaultContexts = []
+
+contextsOfActions :: Actions -> Contexts
+contextsOfActions a =  nub (a >>= contextsOfAnAction)
+  where
+    contextsOfAnAction :: Action -> Contexts
+    contextsOfAnAction (Action _ _ _ c _) = c
 

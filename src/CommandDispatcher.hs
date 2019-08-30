@@ -6,6 +6,7 @@ where
 import qualified Data.UUID.V4                  as UUID4
 
 import           Domain.Action
+import           Domain.Action.Types
 import           Domain.Command
 import           Infra.FS.ActionsFileIO
 import           Infra.FS.YamlFileIO            ( YamlFilePath )
@@ -25,7 +26,7 @@ dispatchCommand (Add description project contexts) filePath = addNewAction
     addNewAction = do
       actions  <- readActions filePath
       actionId <- UUID4.nextRandom
-      let action = createAction actionId description (extractA project defaultProject) (extractA contexts defaultContexts)
+      let action = createActionWithUUID actionId description (extractA project defaultProject) (extractA contexts defaultContexts)
       writeActionsAndOutputAction (action, addAction action actions)
     writeActionsAndOutputAction :: (Action, Actions) -> IO ()
     writeActionsAndOutputAction (a, as) = writeActions filePath as >> ghtdPrint a
