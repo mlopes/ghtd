@@ -1,6 +1,6 @@
 - action: df5fcade2adb49ceb3902f123dabc764
   description: some description
-  project: inbox
+  project: Inbox
   contexts: [ online, computer ]
   state: To Do
 - action: c933c8c0e55041f4966d5f326e853d28

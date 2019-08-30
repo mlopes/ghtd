@@ -11,10 +11,10 @@ import qualified Data.Foldable                 as F
 import qualified Options.Applicative           as O
 
 import Domain.Command
-import Domain.Action
+import Domain.Action.Types
 
 data CliCommand
-  = CmdAdd Description Project Contexts
+  = CmdAdd Description (Maybe Project) (Maybe Contexts)
   | CmdComplete ActionId
   | CmdCancel ActionId
   | CmdProject
@@ -62,27 +62,23 @@ actionIdParam = O.argument O.str (O.metavar "ACTION_ID")
 -- Saving this here as a reference on how to parse a bunch of optional positional arguments
 -- addParams :: O.Parser (Maybe [String])
 -- addParams = O.optional $ O.some (O.argument O.str (O.metavar "FILTER..."))
-projectOption :: O.Parser Project
-projectOption = O.strOption
+projectOption :: O.Parser (Maybe Project)
+projectOption = O.optional $ O.strOption
   (mconcat
     [ O.help "Project name."
-    , O.value defaultProject
-    , O.showDefault
     , O.long "project"
     , O.short 'p'
     , O.metavar "PROJECT"
     ]
   )
 
-contextOptions :: O.Parser Contexts
-contextOptions = fmap (nub . splitOn ",") contextAsStringParser
+contextOptions :: O.Parser (Maybe Contexts)
+contextOptions = O.optional $ fmap (nub . splitOn ",") contextAsStringParser
 
 contextAsStringParser :: O.Parser Text
 contextAsStringParser = O.strOption
   (mconcat
     [ O.help "Contexts for the action."
-    , O.value $ intercalate "," defaultContexts
-    , O.showDefault
     , O.long "contexts"
     , O.short 'c'
     , O.metavar "CONTEXTS"

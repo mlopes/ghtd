@@ -11,7 +11,6 @@ where
 import qualified Data.UUID.V4                  as UUID4
 import qualified Data.Yaml                     as Y
 import           Data.String.Interpolate        ( i )
-import           Domain.Action
 import           Data.Yaml                      ( FromJSON(..)
                                                 , (.:)
                                                 , ToJSON(..)
@@ -19,14 +18,20 @@ import           Data.Yaml                      ( FromJSON(..)
                                                 )
 
 import           Infra.FS.YamlFileIO
+import           Domain.Action.Types
+import           Domain.Action
 
-readActions :: YamlFilePath -> IO [Action]
+readActions :: YamlFilePath -> IO Actions
 readActions filePath = do
   actionId <- UUID4.nextRandom
-  let (newAction, _) = addAction [] actionId "Welcome to ghtd. Run ghtd --help to know more." defaultProject defaultContexts
-  readYamlFile [newAction] filePath
+  let defaultAction = createActionWithUUID
+        actionId
+        "Welcome to ghtd. Run ghtd --help to know more."
+        defaultProject
+        defaultContexts
+  readYamlFile [defaultAction] filePath
 
-writeActions :: YamlFilePath -> [Action] -> IO ()
+writeActions :: YamlFilePath -> Actions -> IO ()
 writeActions = writeYamlFile
 
 instance FromJSON Action where

@@ -10,13 +10,11 @@ where
 
 import           Data.String.Interpolate        ( i )
 
-import           Domain.Action
+import           Domain.Action.Types
+import           Domain.Scope
 
 format :: GhtdFormatable a => a -> Text
 format = ghtdFormat
-
-indexList :: [a] -> [(Text, a)]
-indexList = zip (fmap (pack . show) [1 :: Integer ..])
 
 textListToLines :: [Text] -> Text
 textListToLines = intercalate "\n\n"
@@ -44,10 +42,9 @@ instance GhtdFormatable Action where
     , [i|(#{action})|]
     ]
 
-instance GhtdFormatable [Action] where
-  ghtdFormat = textListToLines . actionListToTextList . indexList
-
-
-instance GhtdFormatable [Project] where
+instance GhtdFormatable Projects where
   ghtdFormat = intercalate "\n"
+
+instance GhtdFormatable ScopeView where
+  ghtdFormat = textListToLines . actionListToTextList
 
