@@ -11,6 +11,7 @@ where
 import           Data.String.Interpolate        ( i )
 
 import           Domain.Action.Types
+import           Domain.Scope
 
 format :: GhtdFormatable a => a -> Text
 format = ghtdFormat
@@ -50,4 +51,7 @@ instance GhtdFormatable Actions where
 
 instance GhtdFormatable [Project] where
   ghtdFormat = intercalate "\n"
+
+instance GhtdFormatable ScopeView where
+  ghtdFormat = textListToLines . actionListToTextList
 

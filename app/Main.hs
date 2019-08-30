@@ -8,9 +8,9 @@ import           CommandDispatcher
 
 main :: IO ()
 main = do
-  _ <- loadScope scopeFilePath
+  scope <- loadScope scopeFilePath
   command <- resolveCommand
-  dispatchCommand command actionsFilePath
+  dispatchCommand scope command actionsFilePath
 
 actionsFilePath :: Text
 actionsFilePath = "./data/sample.yaml"
