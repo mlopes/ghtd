@@ -34,11 +34,11 @@ dispatchCommand _ (Add description project contexts) filePath = addNewAction
   writeActionsAndOutputAction :: (Action, Actions) -> IO ()
   writeActionsAndOutputAction (a, as) = writeActions filePath as >> ghtdPrint a
 
-dispatchCommand _ (Complete actionId) filePath =
-  changeActionState completeAction actionId filePath
+dispatchCommand scope (Complete actionId) filePath =
+  changeActionState (scopedView scope) completeAction actionId filePath
 
-dispatchCommand _ (Cancel actionId) filePath =
-  changeActionState cancelAction actionId filePath
+dispatchCommand scope (Cancel actionId) filePath =
+  changeActionState (scopedView scope) cancelAction actionId filePath
 
 dispatchCommand _ ListProjects filePath = listProjects
   where listProjects = readActions filePath >>= ghtdPrint . projectsFromActions
@@ -46,10 +46,10 @@ dispatchCommand _ ListProjects filePath = listProjects
 dispatchCommand _ ListContexts filePath = listContexts
   where listContexts = readActions filePath >>= ghtdPrint . contextsOfActions
 
-changeActionState :: ActionsModifier -> ActionId -> YamlFilePath -> IO ()
-changeActionState actionsModifier aId filePath = do
+changeActionState :: ScopeViewer -> ActionsModifier -> ActionId -> YamlFilePath -> IO ()
+changeActionState scopeViewer actionsModifier aId filePath = do
   actions <- readActions filePath
   let newActions = actionsModifier actions aId
   _ <- writeActions filePath newActions
-  ghtdPrint newActions
+  ghtdPrint (scopeViewer newActions)
 
